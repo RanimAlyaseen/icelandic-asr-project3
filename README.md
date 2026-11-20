@@ -362,7 +362,7 @@ I evaluated five models on the same 1,884 frozen test clips from 1,026 speaker/s
 
 \* These published Icelandic checkpoints may have seen some Samrómur test clips during external training.
 
-I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across the 12 baseline comparisons. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
+I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across all 20 pairwise comparisons of the five models. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
 
 ### Fine-Tuned Whisper Small — Final Test Results
 
