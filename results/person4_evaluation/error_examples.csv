@@ -15,3 +15,7 @@ whisper_small_test_beam5.csv,0064716,substitution,vegna er ég,hlökna ariða ga
 whisper_small_test_beam5.csv,0064716,deletion,að spyrja,,þess vegna er ég að spyrja,þess hlökna ariða gasperja
 whisper_small_test_beam5.csv,0011031,insertion,,við það,því er vitaskuld ógerlegt að svara með nokkurri vissu,því er við það skuldt okkel eftir svara með nokkur í vissu
 whisper_small_test_beam5.csv,0030689,word boundary,koparpeningar,kopar peningar,antoníníanusarnir eru koparpeningar með örlitlu silfri blönduðu í,aðton í annu sann ér eru kopar peningar með öllitlu silveri blöntuðu í
+whisper_finetuned_step1000_test.csv,0011280,substitution,og,á,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar bjöllunær því í gleymsku á eldri árum hans
+whisper_finetuned_step1000_test.csv,0011280,deletion,nær,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar bjöllunær því í gleymsku á eldri árum hans
+whisper_finetuned_step1000_test.csv,0016230,insertion,,of,hvað veldur ofvirkni,hvað veldur of virkni
+whisper_finetuned_step1000_test.csv,0016230,word boundary,ofvirkni,of virkni,hvað veldur ofvirkni,hvað veldur of virkni

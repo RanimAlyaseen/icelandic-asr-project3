@@ -3,3 +3,4 @@ hubert_ctc_test.csv,7727,2847,257,76
 wav2vec2_is_test.csv,1022,94,111,65
 whisper_small_is_test_beam5.csv,2747,249,445,133
 whisper_small_test_beam5.csv,10068,650,3018,18
+whisper_finetuned_step1000_test.csv,4524,429,752,138
