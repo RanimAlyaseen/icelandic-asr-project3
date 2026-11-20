@@ -1,0 +1,24 @@
+{
+  "model": "recovered Whisper Small step 1000",
+  "split": "test",
+  "samples": 1884,
+  "complete_split": true,
+  "wer": 0.3605966753049744,
+  "cer": 0.10163433107861801,
+  "normalization": "prepare.normalize_text applied to references and predictions",
+  "decoding": {
+    "language": "is",
+    "task": "transcribe",
+    "max_new_tokens": 225,
+    "num_beams": 1,
+    "do_sample": false
+  },
+  "seconds_total": 892.3244137850002,
+  "seconds_per_utterance": 0.4736329160217623,
+  "device": "cuda",
+  "gpu": "Tesla T4",
+  "python": "3.13.16",
+  "torch": "2.14.1+cu130",
+  "model_weights_sha256": "d056c430a0b4c1d9006a9ddf68a0b8d92f1cf4828ccb4f5bd96f77d5f911f80b",
+  "manifest_sha256": "f5e346f545a5d7f4298f1838bc63b978a4d7ab9d063ddc97897fa065223d0481"
+}
