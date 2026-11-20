@@ -347,3 +347,20 @@ Team listening and Icelandic transcript-agreement review remain pending. The [co
 The repository's original code and documentation use [MIT](LICENSE). The Samrómur audio, prompts, metadata, and derived scoring references use CC BY 4.0.
 
 Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed under CC BY 4.0. This repository selects IDs and derives normalized scoring references from that release. Cite Mollberg et al., “Samrómur: Crowd-sourcing Data Collection for Icelandic Speech Recognition,” LREC 2020. [CLARIN release](https://repository.clarin.is/repository/xmlui/handle/20.500.12537/189) · [OpenSLR 112](https://openslr.org/112/) · [LREC paper](https://aclanthology.org/2020.lrec-1.425/) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
+## (Saleh Almasaadi) — Evaluation and Statistical Analysis
+
+I evaluated four models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
+
+| Model | Test WER | Test CER |
+| --- | ---: | ---: |
+| Icelandic wav2vec 2.0* | 7.76% | 1.86% |
+| Published Icelandic Whisper Small* | 21.75% | 5.60% |
+| HuBERT + CTC | 68.46% | 23.31% |
+| Original Whisper Small | 86.82% | 36.35% |
+
+\* These published Icelandic checkpoints may have seen some Samrómur test clips during external training.
+
+I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across the 12 baseline comparisons. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
+
+The main comparison between the team's fine-tuned Whisper and the original Whisper Small is pending the official test predictions.
