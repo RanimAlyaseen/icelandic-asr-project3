@@ -351,44 +351,76 @@ Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed un
 
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
-I evaluated five models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
+I evaluated five ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
+
+### Test Results
 
 | Model | Test WER | Test CER |
 | --- | ---: | ---: |
 | Icelandic wav2vec 2.0* | 7.76% | 1.86% |
 | Published Icelandic Whisper Small* | 21.75% | 5.60% |
+| Fine-tuned Whisper Small (checkpoint 1000) | 36.06% | 10.16% |
 | HuBERT + CTC | 68.46% | 23.31% |
 | Original Whisper Small | 86.82% | 36.35% |
 
 \* These published Icelandic checkpoints may have seen some Samrómur test clips during external training.
 
-I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across all 20 pairwise comparisons of the five models. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
+### Statistical Analysis
+
+I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across all 20 pairwise comparisons of the five models.
+
+The [results folder](results/person4_evaluation/) contains the confidence intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) contains the original CPU-based analysis.
 
 ### Fine-Tuned Whisper Small — Final Test Results
 
-The recovered Whisper Small checkpoint 1000 was evaluated on
-all 1,884 frozen test clips using the shared normalization policy.
+The recovered Whisper Small checkpoint 1000 was evaluated on all 1,884 frozen test clips using the shared normalization policy.
 
 | Metric | Original Whisper Small | Fine-Tuned Whisper Small |
-|---|---:|---:|
+| --- | ---: | ---: |
 | WER | 86.82% | 36.06% |
 | CER | 36.35% | 10.16% |
 
-Fine-tuning reduced WER by 50.76 percentage points
-(95% CI: 47.31–54.85) and CER by 26.19 percentage points
-(95% CI: 23.48–29.17).
+Fine-tuning reduced WER by **50.76 percentage points** (95% CI: 47.31–54.85) and CER by **26.19 percentage points** (95% CI: 23.48–29.17).
 
-Both paired randomization tests gave p = 0.00010 using
-10,000 randomizations, with speaker/session groups kept together.
+Both paired randomization tests gave an approximate unadjusted p-value of 0.00010 using 10,000 randomizations, with speaker/session groups kept together. The Holm-adjusted p-value across all 20 comparisons was 0.00200.
 
-The evaluation used a Tesla T4 GPU and took 892.32 seconds
-for 1,884 test clips.
+The test-set inference used a Tesla T4 GPU and took 892.32 seconds for 1,884 test clips. The subsequent statistical analysis can run on a CPU.
 
-The per-clip predictions and run metadata are available in
-`results/person4_evaluation/person3_whisper/`.
+The per-clip predictions and run metadata are available in `results/person4_evaluation/person3_whisper/`.
 
-The statistical comparison is saved in
-`results/person4_evaluation/whisper_finetuning_comparison.csv`.
+The statistical comparison is saved in `results/person4_evaluation/whisper_finetuning_comparison.csv`.
+
+The original Whisper baseline used beam search with five beams, while the fine-tuned checkpoint used greedy decoding with one beam. Therefore, this comparison reflects both fine-tuning and decoding-configuration differences.
+
+### Reproducing the Evaluation
+
+The standalone evaluation script is located at `evaluation/person4_evaluate.py`. It evaluates all five models using saved test predictions, without retraining or GPU access.
+
+Install dependencies:
+
+```bash
+pip install numpy pandas jiwer==4.0.0 matplotlib
+```
+
+Run from the repository root:
+
+```bash
+python evaluation/person4_evaluate.py \
+  --person3-csv results/person4_evaluation/person3_whisper/test_predictions.csv \
+  --output-dir results/person4_evaluation_reproduced
+```
+
+The script verifies all 1,884 test clips and 1,026 speaker/session groups, reproduces WER and CER, calculates speaker/session-clustered confidence intervals, performs paired statistical tests with Holm correction, and exports the following files:
+
+- `model_scores_and_confidence_intervals.csv` — Five-model WER/CER scores and 95% confidence intervals.
+- `paired_comparisons.csv` — All 20 paired statistical comparisons.
+- `error_counts.csv` — Substitution, deletion, insertion, and word-boundary error counts.
+- `error_examples.csv` — Representative transcription errors.
+- `methods.json` — Evaluation settings and reproducibility details.
+- `test_error_rates.png` — Comparison chart of test error rates.
+
+The evaluation uses 10,000 bootstrap samples with seed 2105 and 10,000 paired randomization samples with seed 2106.
+
 ---
 
 ## Person 3:Tasnim Alibraheem 2309015259 — Whisper Small Fine-Tuning
