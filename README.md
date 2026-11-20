@@ -351,7 +351,7 @@ Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed un
 
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
-I evaluated four models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
+I evaluated five models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
 
 | Model | Test WER | Test CER |
 | --- | ---: | ---: |
@@ -364,7 +364,31 @@ I evaluated four models on the same 1,884 frozen test clips from 1,026 speaker/s
 
 I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across the 12 baseline comparisons. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
 
-The main comparison between the team's fine-tuned Whisper and the original Whisper Small is pending the official test predictions.
+### Fine-Tuned Whisper Small — Final Test Results
+
+The recovered Whisper Small checkpoint 1000 was evaluated on
+all 1,884 frozen test clips using the shared normalization policy.
+
+| Metric | Original Whisper Small | Fine-Tuned Whisper Small |
+|---|---:|---:|
+| WER | 86.82% | 36.06% |
+| CER | 36.35% | 10.16% |
+
+Fine-tuning reduced WER by 50.76 percentage points
+(95% CI: 47.31–54.85) and CER by 26.19 percentage points
+(95% CI: 23.48–29.17).
+
+Both paired randomization tests gave p = 0.00010 using
+10,000 randomizations, with speaker/session groups kept together.
+
+The evaluation used a Tesla T4 GPU and took 892.32 seconds
+for 1,884 test clips.
+
+The per-clip predictions and run metadata are available in
+`results/person4_evaluation/person3_whisper/`.
+
+The statistical comparison is saved in
+`results/person4_evaluation/whisper_finetuning_comparison.csv`.
 ---
 
 ## Person 3:Tasnim Alibraheem 2309015259 — Whisper Small Fine-Tuning
