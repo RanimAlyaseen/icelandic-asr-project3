@@ -1,4 +1,4 @@
-# Person 4 — Evaluation and Statistical Analysis
+# Saleh Almasaadi — Evaluation and Statistical Analysis
 
 - Verified that all four baseline prediction files matched the 1,884 frozen test clips, reference transcripts, and speaker/session IDs.
 - Recalculated WER and CER using the shared text normalization and reproduced the reported scores.
