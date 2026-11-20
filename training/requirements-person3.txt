@@ -1,0 +1,11 @@
+# Person 3 — Whisper Small Fine-Tuning
+# Package versions recorded from the Google Colab training environment.
+
+torch==2.14.1
+transformers==5.22.1
+datasets==4.8.5
+accelerate==1.15.0
+evaluate==0.4.6
+jiwer==4.0.0
+librosa==0.11.0
+soundfile==0.14.0

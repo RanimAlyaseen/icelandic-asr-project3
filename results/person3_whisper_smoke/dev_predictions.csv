@@ -1,0 +1,6 @@
+split,id,reference,prediction,prediction_normalized
+dev,0034220,veruleikinn sé flestum okkar hulinn,veruleikinn sé flestum okkar hulinn,veruleikinn sé flestum okkar hulinn
+dev,0002198,árið nítján hundrað sjötíu og einn klofnaði bangladess svo aftur frá pakistan,árið nýtjanhundru syrtíu eiginflofnaði bangla desvá aftur frá pakistan,árið nýtjanhundru syrtíu eiginflofnaði bangla desvá aftur frá pakistan
+dev,0024550,þótt grameðlan hafi ekki farið hratt yfir,þótt grameðlan hafi ekki farið hratt yfir,þótt grameðlan hafi ekki farið hratt yfir
+dev,0015797,auk vettvangshugtaksins er menningarauður grundvallarhugtak hjá bourdieu,auk vettfangshugtexins er menningarauður grundvallarhugtahjá borgið,auk vettfangshugtexins er menningarauður grundvallarhugtahjá borgið
+dev,0008014,eineggja tvíburar hafa líka eins erfðaefni,ein ekkja tvípurar hafa líka eins erfðaefni,ein ekkja tvípurar hafa líka eins erfðaefni

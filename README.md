@@ -348,6 +348,7 @@ The repository's original code and documentation use [MIT](LICENSE). The Samróm
 
 Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed under CC BY 4.0. This repository selects IDs and derives normalized scoring references from that release. Cite Mollberg et al., “Samrómur: Crowd-sourcing Data Collection for Icelandic Speech Recognition,” LREC 2020. [CLARIN release](https://repository.clarin.is/repository/xmlui/handle/20.500.12537/189) · [OpenSLR 112](https://openslr.org/112/) · [LREC paper](https://aclanthology.org/2020.lrec-1.425/) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
+
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
 I evaluated four models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
@@ -364,3 +365,101 @@ I evaluated four models on the same 1,884 frozen test clips from 1,026 speaker/s
 I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across the 12 baseline comparisons. The [results folder](results/person4_evaluation/) contains the intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the analysis on a CPU.
 
 The main comparison between the team's fine-tuned Whisper and the original Whisper Small is pending the official test predictions.
+---
+
+## Person 3:Tasnim Alibraheem 2309015259 — Whisper Small Fine-Tuning
+
+### Overview
+Fine-tuned OpenAI's multilingual Whisper Small model (~242M parameters)
+for Icelandic automatic speech recognition using the Samrómur 21.05 dataset.
+
+### Training Configuration
+
+| Parameter | Value |
+|---|---|
+| Model | openai/whisper-small |
+| Training samples | 10,488 |
+| Validation samples | 1,314 |
+| Epochs | 3 |
+| Learning rate | 1e-5 |
+| Effective batch size | 16 |
+| Precision | FP16 |
+| GPU | NVIDIA Tesla T4 |
+| Training duration | 5 hours 12 minutes |
+| Optimizer steps | 1,968 |
+
+### Validation Results
+
+| Checkpoint | WER | CER |
+|---|---|---|
+| Step 1000 | 34.51% | 9.70% |
+| Step 1600 | **30.62%** | 8.41% |
+| Step 1968 | 30.70% | **8.40%** |
+
+The lowest WER (30.62%) occurred at step 1600, while the lowest
+CER (8.40%) occurred at step 1968. These are different checkpoints.
+
+The best checkpoint was not preserved. The recovered and exported
+model corresponds to step 1000.
+
+Its original validation results were:
+- WER: 34.51%
+- CER: 9.70%
+
+These results have not yet been recalculated using the team's shared
+`prepare.normalize_text` scoring policy.
+
+### Deliverables
+
+- Cleaned Whisper Small fine-tuning notebook
+- Training metrics and configuration
+- Recovered checkpoint 1000 (stored on Google Drive)
+
+### Remaining Evaluation
+
+Before final test evaluation, checkpoint 1000 must be re-evaluated
+on the development set using the shared text normalization policy.
+
+After decoding settings are frozen, a teammate can evaluate the
+recovered model on the held-out test set.
+
+The final evaluation should include:
+- Test WER and CER
+- Per-utterance predictions and references
+- Inference time and GPU information
+- Confidence intervals and statistical comparisons
+
+No final test results are reported yet.
+
+### Recovered Model — Download and Verification
+
+**Model:** Fine-tuned OpenAI Whisper Small  
+**Available checkpoint:** Step 1000  
+**Original validation WER:** 34.51%  
+**Original validation CER:** 9.70%  
+
+**Download the exported model:**
+
+https://drive.google.com/drive/folders/1BKWu0PBXdNlp7pqeX7MCn9lhzFsay_Md?usp=sharing
+
+The complete model folder contains the model weights, configuration,
+processor, tokenizer, and recovery metadata.
+
+#### SHA-256 Checksums
+
+| File | SHA-256 |
+|---|---|
+| config.json | 572ff2d955ca237231a371e756e41b4a4c0c63df3c30e64538b90294f468e449 |
+| generation_config.json | 2d3e60d85c13324649773e42932b2a9916edd3ff0f24434b17db657c61c57fd0 |
+| model.safetensors | d056c430a0b4c1d9006a9ddf68a0b8d92f1cf4828ccb4f5bd96f77d5f911f80b |
+| processor_config.json | 8c648fa85aafc59a07435ed751322499bd4238b819ca9200ddd2b5ba4df50e68 |
+| recovery_metadata.json | 21e255d551be5020ca1c0304b8b25b6bf88c018928bc6768b0b5cd341bff7f09 |
+| tokenizer.json | 783ab7faf82595b8abc49cef57865b055d763753e6383d0d98774abcfe16e57a |
+| tokenizer_config.json | 0940f4bfe73310f1fdc9f86242568178700211fde2d9b49b15dd1ad892552641 |
+
+These checksums were calculated from the exported files stored
+in Google Drive.
+
+The exported checkpoint was previously loaded successfully.
+Full inference and standardized development-set evaluation remain pending.
+

@@ -1,0 +1,24 @@
+{
+  "model": "recovered Whisper Small step 1000",
+  "split": "dev",
+  "samples": 5,
+  "complete_split": false,
+  "wer": 0.40540540540540543,
+  "cer": 0.12359550561797752,
+  "normalization": "prepare.normalize_text applied to references and predictions",
+  "decoding": {
+    "language": "is",
+    "task": "transcribe",
+    "max_new_tokens": 225,
+    "num_beams": 1,
+    "do_sample": false
+  },
+  "seconds_total": 61.17535460900035,
+  "seconds_per_utterance": 12.23507092180007,
+  "device": "cpu",
+  "gpu": null,
+  "python": "3.13.18",
+  "torch": "2.14.1+cpu",
+  "model_weights_sha256": "d056c430a0b4c1d9006a9ddf68a0b8d92f1cf4828ccb4f5bd96f77d5f911f80b",
+  "manifest_sha256": "f0e7675cd31497788250728bba966d1d884ad5f929b3488724b2fef2110f9bf4"
+}

@@ -1,0 +1,47 @@
+{
+  "experiment": "Person 3 - Icelandic Whisper Small fine-tuning",
+  "dataset": "Samromur 21.05 (team cleaned split)",
+  "model_id": "openai/whisper-small",
+  "language": "Icelandic",
+  "training": {
+    "train_samples": 10488,
+    "validation_samples": 1314,
+    "test_samples": 1884,
+    "epochs": 3,
+    "optimizer_steps_completed": 1968,
+    "learning_rate": 0.00001,
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "effective_batch_size": 16,
+    "gpu": "NVIDIA Tesla T4",
+    "duration_hours_approx": 5.20
+  },
+  "validation_history": [
+    {"step": 200, "wer": 0.509447, "cer": 0.159794},
+    {"step": 400, "wer": 0.424523, "cer": 0.122550},
+    {"step": 600, "wer": 0.382061, "cer": 0.108491},
+    {"step": 800, "wer": 0.368893, "cer": 0.108507},
+    {"step": 1000, "wer": 0.345134, "cer": 0.096969},
+    {"step": 1200, "wer": 0.322519, "cer": 0.087826},
+    {"step": 1400, "wer": 0.315935, "cer": 0.086731},
+    {"step": 1600, "wer": 0.306202, "cer": 0.084147},
+    {"step": 1800, "wer": 0.306393, "cer": 0.084351},
+    {"step": 1968, "wer": 0.306966, "cer": 0.084022}
+  ],
+  "best_recorded_validation_wer": {"step": 1600, "wer": 0.306202},
+  "best_recorded_validation_cer": {"step": 1968, "cer": 0.084022},
+  "recovered_export": {
+    "checkpoint_step": 1000,
+    "validation_wer": 0.345134,
+    "validation_cer": 0.096969,
+    "drive_folder": "MyDrive/NLP_Project3_Whisper_FineTuning/recovered_model_step1000",
+    "model_weights_in_github": false
+  },
+  "evaluation_status": {
+    "held_out_test_evaluation": "not completed",
+    "inference_latency": "not measured",
+    "confidence_intervals": "not calculated",
+    "p_values": "not calculated"
+  },
+  "provenance": "Values transcribed from the saved Step 10B training output in the cleaned notebook; this is not the missing original training_results.json file."
+}
