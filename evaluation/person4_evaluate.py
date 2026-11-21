@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Person 4: reproducible ASR evaluation from saved predictions.
 
-Run: python evaluation/person4_evaluate.py [--person3-csv PATH] [--output-dir PATH]
+Run: python evaluation/person4_evaluate.py [--person3-csv PATH] [--gmm-csv PATH] [--rnnt-csv PATH] [--output-dir PATH]
 Dependencies: numpy pandas jiwer==4.0.0 matplotlib; git required.
 No GPU or training required. Input files are fetched from a pinned Git commit.
 """
@@ -10,6 +10,8 @@ import os
 
 parser = argparse.ArgumentParser(description="Evaluate Icelandic ASR predictions")
 parser.add_argument("--person3-csv", type=str, default=None, help="Person 3 test_predictions.csv")
+parser.add_argument("--gmm-csv", type=str, default=None, help="Person 5 MFCC+GMM-HMM test predictions CSV")
+parser.add_argument("--rnnt-csv", type=str, default=None, help="Person 2 RNN-T test predictions CSV")
 parser.add_argument("--output-dir", default="person4_evaluation", help="Output directory")
 args = parser.parse_args()
 
@@ -155,6 +157,27 @@ if args.person3_csv:
         })
     rows_by_model["whisper_finetuned_step1000_test.csv"] = p3_converted
     model_files.append("whisper_finetuned_step1000_test.csv")
+if args.gmm_csv:
+    gmm_path = Path(args.gmm_csv)
+    gmm_rows = read_rows(gmm_path)
+    if len(gmm_rows) != 1884:
+        raise ValueError(f"GMM-HMM file should have 1,884 rows; found {len(gmm_rows)}")
+    required = {"id", "split", "speaker_session_id", "reference", "reference_raw", "hypothesis_raw"}
+    if any(not required.issubset(row) for row in gmm_rows):
+        raise ValueError(f"GMM-HMM file is missing required columns: {required}")
+    rows_by_model["mfcc_gmm_hmm_test.csv"] = gmm_rows
+    model_files.append("mfcc_gmm_hmm_test.csv")
+if args.rnnt_csv:
+    rnnt_path = Path(args.rnnt_csv)
+    rnnt_rows = read_rows(rnnt_path)
+    if len(rnnt_rows) != 1884:
+        raise ValueError(f"RNN-T file should have 1,884 rows; found {len(rnnt_rows)}")
+    required = {"id", "split", "speaker_session_id", "reference", "reference_raw", "hypothesis_raw"}
+    if any(not required.issubset(row) for row in rnnt_rows):
+        raise ValueError(f"RNN-T file is missing required columns: {required}")
+    rows_by_model["rnnt_test.csv"] = rnnt_rows
+    model_files.append("rnnt_test.csv")
+
 for name, rows in rows_by_model.items():
     issues = validate_predictions(rows, official, session_by_clip)
     failures = {issue: count for issue, count in issues.items() if count}
@@ -173,6 +196,7 @@ reported = {
     "whisper_small_is_test_beam5.csv": (21.75, 5.60),
     "whisper_small_test_beam5.csv": (86.82, 36.35),
     "whisper_finetuned_step1000_test.csv": (36.06, 10.16),
+    "rnnt_test.csv": (68.95, 30.54),
 }
 
 for filename, rows in rows_by_model.items():
@@ -492,6 +516,8 @@ labels = {
     "whisper_small_is_test_beam5.csv": "Icelandic Whisper Small*",
     "whisper_small_test_beam5.csv": "Original Whisper Small",
     "whisper_finetuned_step1000_test.csv": "Fine-tuned Whisper Small",
+    "mfcc_gmm_hmm_test.csv": "MFCC + GMM-HMM",
+    "rnnt_test.csv": "RNN-T (scratch)",
 }
 
 scores = pd.DataFrame(ci_rows)
