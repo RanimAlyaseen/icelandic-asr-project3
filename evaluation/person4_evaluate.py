@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Person 4: reproducible ASR evaluation from saved predictions.
 
-Run: python scripts/person4_evaluate.py [--person3-csv PATH] [--output-dir PATH]
+Run: python evaluation/person4_evaluate.py [--person3-csv PATH] [--output-dir PATH]
 Dependencies: numpy pandas jiwer==4.0.0 matplotlib; git required.
 No GPU or training required. Input files are fetched from a pinned Git commit.
 """
@@ -417,6 +417,39 @@ tables = {
 for filename, rows in tables.items():
     pd.DataFrame(rows).to_csv(results_dir / filename, index=False)
     print(f"Saved {filename} ({len(rows)} rows)")
+
+# Generate the primary fine-tuning comparison from the same computed,
+# speaker/session-clustered paired statistics (never hard-code results).
+original_model = "whisper_small_test_beam5.csv"
+finetuned_model = "whisper_finetuned_step1000_test.csv"
+if finetuned_model in rows_by_model:
+    score_lookup = {
+        (row["model_file"], row["metric"]): row["score_percent"]
+        for row in ci_rows
+    }
+    comparison_rows = []
+    for metric in ("WER", "CER"):
+        matches = [
+            row for row in paired_rows
+            if row["model_a"] == original_model
+            and row["model_b"] == finetuned_model
+            and row["metric"] == metric
+        ]
+        if len(matches) != 1:
+            raise RuntimeError(f"Expected one original-vs-finetuned {metric} comparison")
+        paired = matches[0]
+        comparison_rows.append({
+            "metric": metric,
+            "original_percent": round(score_lookup[(original_model, metric)], 2),
+            "finetuned_percent": round(score_lookup[(finetuned_model, metric)], 2),
+            "improvement_pp": round(paired["difference_pp"], 2),
+            "ci_low_pp": round(paired["ci_low_pp"], 2),
+            "ci_high_pp": round(paired["ci_high_pp"], 2),
+            "p_value": paired["p_value"],
+        })
+    comparison_path = results_dir / "whisper_finetuning_comparison.csv"
+    pd.DataFrame(comparison_rows).to_csv(comparison_path, index=False)
+    print(f"Saved {comparison_path} ({len(comparison_rows)} rows)")
 
 methods = {
     "source_commit": source_commit,
