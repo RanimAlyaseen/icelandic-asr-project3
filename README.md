@@ -351,7 +351,7 @@ Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed un
 
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
-I evaluated five ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and references and reproduced the reported scores using `prepare.normalize_text`.
+I evaluated seven ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and reference transcripts and recalculated WER and CER using the shared `prepare.normalize_text` function.
 
 ### Test Results
 
@@ -361,65 +361,96 @@ I evaluated five ASR models on the same 1,884 frozen test clips from 1,026 speak
 | Published Icelandic Whisper Small* | 21.75% | 5.60% |
 | Fine-tuned Whisper Small (checkpoint 1000) | 36.06% | 10.16% |
 | HuBERT + CTC | 68.46% | 23.31% |
+| RNN-T (trained from scratch) | 68.95% | 30.54% |
 | Original Whisper Small | 86.82% | 36.35% |
+| MFCC + GMM-HMM | 101.47% | 87.74% |
 
-\* These published Icelandic checkpoints may have seen some Samrómur test clips during external training.
+\* These published Icelandic checkpoints may have encountered some Samrómur test clips during external training. Their results should therefore be interpreted with caution.
+
+WER can exceed 100% when the total number of substitution, deletion, and insertion errors exceeds the number of reference words.
 
 ### Statistical Analysis
 
-I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. For paired tests, I used 10,000 session-level random swaps and applied Holm adjustment across all 20 pairwise comparisons of the five models.
+I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. I also performed 42 paired WER/CER comparisons using 10,000 session-level randomization tests, with Holm correction for multiple comparisons.
 
-The [results folder](results/person4_evaluation/) contains the confidence intervals, p-values, error counts, examples, and chart. The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) contains the original CPU-based analysis.
+The [results folder](results/person4_evaluation/) contains the error rates, confidence intervals, paired statistical comparisons, transcription error analysis, methods, and comparison chart.
 
-### Fine-Tuned Whisper Small — Final Test Results
+The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the seven-model analysis on a CPU.
 
-The recovered Whisper Small checkpoint 1000 was evaluated on all 1,884 frozen test clips using the shared normalization policy.
+### Fine-Tuned Whisper Small Evaluation
 
-| Metric | Original Whisper Small | Fine-Tuned Whisper Small |
-| --- | ---: | ---: |
-| WER | 86.82% | 36.06% |
-| CER | 36.35% | 10.16% |
+I evaluated Person 3's recovered Whisper Small checkpoint 1000 on the development and frozen test sets using a Tesla T4 GPU.
 
-Fine-tuning reduced WER by **50.76 percentage points** (95% CI: 47.31–54.85) and CER by **26.19 percentage points** (95% CI: 23.48–29.17).
+- Development set (1,314 clips): 34.51% WER, 9.69% CER.
+- Test set (1,884 clips): 36.06% WER, 10.16% CER.
 
-Both paired randomization tests gave an approximate unadjusted p-value of 0.00010 using 10,000 randomizations, with speaker/session groups kept together. The Holm-adjusted p-value across all 20 comparisons was 0.00200.
+The original Whisper Small baseline achieved 86.82% WER and 36.35% CER on the test set.
 
-The test-set inference used a Tesla T4 GPU and took 892.32 seconds for 1,884 test clips. The subsequent statistical analysis can run on a CPU.
+The observed WER reduction was 50.76 percentage points (95% CI: 47.31–54.85), while CER decreased by 26.19 percentage points (95% CI: 23.48–29.17).
 
-The per-clip predictions and run metadata are available in `results/person4_evaluation/person3_whisper/`.
+The paired randomization p-values were approximately 0.00010 before correction. With Holm correction across all 42 comparisons, both adjusted p-values were approximately 0.00420.
 
-The statistical comparison is saved in `results/whisper_finetuning_comparison.csv`.
+The test inference took 892.32 seconds on a Tesla T4 GPU.
 
-The original Whisper baseline used beam search with five beams, while the fine-tuned checkpoint used greedy decoding with one beam. Therefore, this comparison reflects both fine-tuning and decoding-configuration differences.
+The original Whisper baseline used five-beam decoding, whereas the fine-tuned checkpoint used greedy decoding. This comparison therefore reflects both model fine-tuning and decoding-configuration differences.
+
+The development and test predictions and run metadata are available in `results/person4_evaluation/person3_whisper/`.
+
+The automatically generated statistical comparison is saved in `results/person4_evaluation/whisper_finetuning_comparison.csv`.
+
+### Additional Model Comparisons
+
+I evaluated Person 5's MFCC + GMM-HMM predictions on the frozen test set and independently calculated 101.47% WER and 87.74% CER.
+
+I also evaluated Person 2's RNN-T predictions and reproduced the reported 68.95% WER and 30.54% CER.
+
+The RNN-T and HuBERT + CTC models achieved similar WER values, with a difference of approximately 0.49 percentage points. The paired WER comparison was not statistically significant (Holm-adjusted p = 0.50725). However, HuBERT + CTC had a lower CER, with a statistically significant paired difference (Holm-adjusted p approximately 0.00420).
+
+### Transcription Error Analysis
+
+I analyzed substitution, deletion, insertion, and exact word-boundary errors for all seven models.
+
+I also examined digit-versus-word recognition errors in the original Whisper Small predictions. There were 39 test predictions containing digits. Representative examples are included in the evaluation notebook and saved to `original_whisper_digit_examples.csv`.
+
+The official frozen scoring and normalization policy was not changed for this analysis.
 
 ### Reproducing the Evaluation
 
-The standalone evaluation script is located at `evaluation/person4_evaluate.py`. It evaluates all five models using saved test predictions, without retraining or GPU access.
+The standalone evaluation script is located at `evaluation/person4_evaluate.py`. It reproduces the seven-model evaluation using saved test predictions, without retraining models or requiring a GPU.
 
-Install dependencies:
+Install the pinned dependencies:
 
 ```bash
-pip install numpy pandas jiwer==4.0.0 matplotlib
+pip install -r evaluation/requirements-person4.txt
 ```
 
-Run from the repository root:
+Run from the repository root after obtaining the relevant prediction CSV files:
 
 ```bash
 python evaluation/person4_evaluate.py \
   --person3-csv results/person4_evaluation/person3_whisper/test_predictions.csv \
+  --gmm-csv results/mfcc_gmm_hmm/predictions/mfcc_gmm_hmm_test.csv \
+  --rnnt-csv results/rnnt/predictions/rnnt_test.csv \
   --output-dir results/person4_evaluation_reproduced
 ```
 
-The script verifies all 1,884 test clips and 1,026 speaker/session groups, reproduces WER and CER, calculates speaker/session-clustered confidence intervals, performs paired statistical tests with Holm correction, and exports the following files:
+The GMM-HMM predictions are included in the team's repository. The RNN-T predictions are provided in Person 2's PR #7 and must be available at the indicated path before this command is run.
 
-- `model_scores_and_confidence_intervals.csv` — Five-model WER/CER scores and 95% confidence intervals.
-- `paired_comparisons.csv` — All 20 paired statistical comparisons.
-- `error_counts.csv` — Substitution, deletion, insertion, and word-boundary error counts.
-- `error_examples.csv` — Representative transcription errors.
-- `methods.json` — Evaluation settings and reproducibility details.
-- `test_error_rates.png` — Comparison chart of test error rates.
+The script verifies the 1,884 test clips and 1,026 speaker/session groups, recalculates WER and CER, computes 95% confidence intervals, performs 42 paired statistical comparisons with Holm correction, and generates the error analysis and comparison chart.
 
-The evaluation uses 10,000 bootstrap samples with seed 2105 and 10,000 paired randomization samples with seed 2106.
+The statistical analysis uses 10,000 bootstrap samples with random seed 2105 and 10,000 paired randomization samples with seed 2106.
+
+The script exports:
+
+- `model_scores_and_confidence_intervals.csv`
+- `paired_comparisons.csv`
+- `error_counts.csv`
+- `error_examples.csv`
+- `whisper_finetuning_comparison.csv`
+- `methods.json`
+- `test_error_rates.png`
+
+The notebook additionally generates `original_whisper_digit_examples.csv`.
 
 ---
 
