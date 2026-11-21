@@ -42,16 +42,18 @@ A fresh public clone on Windows fetched every object with credential helpers dis
 
 Use the hydrated cleaned LFS root, the local full release, or the **audio/** directory of the optional LF handoff. Each has train, dev, and test directories and works with the frozen manifests. The Windows verification environment used Python 3.14.10, NumPy 2.5.5, SoundFile 0.14.0 with libsndfile 1.2.2, and Transformers 5.23.0.
 
-The preparation environment was verified on Windows with Python 3.14.10. Run from the repository root.
+Use a Python **3.14** environment for the data pipeline and its tests. Run from the repository root on Windows.
 
 ```powershell
-python -m venv .venv
+py -3.14 -m venv .venv
 $venvPy = '.\.venv\Scripts\python.exe'
 & $venvPy -m pip install --only-binary=:all: -r requirements-windows-py314.lock.txt
 & $venvPy -m pip check
 ```
 
 On macOS or Linux with Python 3.14, use `python3.14 -m venv .venv`, `.venv/bin/python`, and [requirements.txt](requirements.txt). See the [Windows dependency lock](requirements-windows-py314.lock.txt).
+
+Use a separate [Python 3.13 modeling environment](#modeling-environment-and-tests) for the pretrained and HuBERT tests.
 
 ## Repository contents
 
@@ -67,16 +69,26 @@ On macOS or Linux with Python 3.14, use `python3.14 -m venv .venv`, `.venv/bin/p
 | [preprocess.py](preprocess.py) | Audio loader and Whisper and wav2vec 2.0 preprocessing |
 | [verify.py](verify.py) and [verify_handoff.py](verify_handoff.py) | Verification against the release or the extracted handoff |
 | [requirements.txt](requirements.txt) and [requirements-windows-py314.lock.txt](requirements-windows-py314.lock.txt) | Pinned dependencies and tested Windows environment |
-| [requirements-modeling.txt](requirements-modeling.txt) | Pinned modeling environment (PyTorch, Transformers, Accelerate) used for every baseline and HuBERT run |
-| [tests/](tests/) | Independent tests with known inputs and expected outputs |
+| [requirements-modeling.txt](requirements-modeling.txt) | Person 2's pinned environment for pretrained baselines, HuBERT, and their tests. Person 3's Whisper dependencies are in [training/requirements-person3.txt](training/requirements-person3.txt). |
+| [NLP_Project3_Person3_Whisper_Clean.ipynb](NLP_Project3_Person3_Whisper_Clean.ipynb) | Person 3's Whisper Small fine-tuning notebook and saved training outputs |
+| [training_metrics.json](training_metrics.json) | Historical Whisper training and validation summary transcribed from the notebook output. Its evaluation status describes that snapshot. |
+| [tests/](tests/) | Separate data-pipeline and pretrained/HuBERT unit tests |
 | [output/](output/) | Frozen manifests and references, vocabulary, audit, review queues, and verification records |
 | [data/](data/) | Raw subset and original documents under **raw/samromur_21.05/** and cleaned v1 FLACs under **cleaned/samromur-21.05-20h-v1/** |
 | [review/](review/) | Manual listening decisions kept outside the generated outputs |
 | [contributions/](contributions/) | Individual work records authored and committed by team members |
 | [baselines/](baselines/) | Inference code for published pretrained checkpoints (baselines, no training by the group) |
-| [training/](training/) | Our own training code: HuBERT + CTC fine-tuning and its diagnostic |
-| [notebooks/](notebooks/) | Kaggle/Colab notebooks that run the committed scripts end to end from this repository |
-| [results/](results/) | Per-clip predictions (CSV), run records (JSON: checkpoint, revision, settings, GPU) and training logs |
+| [training/](training/) | HuBERT training and diagnostics, recovered Whisper evaluation, and Person 3's Whisper dependencies |
+| [mfcc_gmm_hmm/](mfcc_gmm_hmm/) | MFCC features, GMM-HMM training and inference, configuration, dependencies, and model card |
+| [models/mfcc_gmm_hmm/](models/mfcc_gmm_hmm/) | Reproducible trained GMM-HMM weights tracked with Git LFS |
+| [notebooks/](notebooks/) | Person 2's pretrained-baseline and HuBERT Kaggle/Colab notebooks |
+| [results/](results/) | Per-clip predictions, run records, and training logs |
+
+### MFCC + GMM-HMM baseline
+
+The classical Icelandic character recognizer uses 13 MFCCs with delta and delta-delta features, diagonal Gaussian mixtures, a left-to-right character HMM, and a train-only character bigram language model. Its initialization uses uniform transcript-to-frame alignment; it does not use a curated phonetic lexicon. The completed CPU run trained on 10,488 utterances, selected its language-model weight on 1,314 dev utterances, then evaluated test once on 1,884 utterances. Test WER was **101.47%** and CER **87.74%**, so the current recipe is a weak reference point. See [`mfcc_gmm_hmm/README.md`](mfcc_gmm_hmm/README.md) for setup, model access, full metrics, and predictions in [`results/mfcc_gmm_hmm/`](results/mfcc_gmm_hmm/).
+
+**Contribution:** Azaa Almousli · Student ID 2309115421 · [work record](contributions/Azaa_Almousli_2309115421.md)
 
 ## Load and preprocess a clip
 
@@ -112,9 +124,19 @@ wav2vec = wav2vec2_example(example, ctc_extractor, ctc_tokenizer(output / "ctc_v
 
 Use the shared [evaluation references (TSV)](output/evaluation_references.tsv) or [evaluation references (JSONL)](output/evaluation_references.jsonl) for both models. Join predictions by `split` and `id`, preserving leading zeros. Each manifest preserves the raw and release-normalized prompts. The scoring text lowercases Unicode, applies NFC, treats punctuation and symbols as spaces, and collapses whitespace. Apply `normalize_text` from [prepare.py](prepare.py) to model hypotheses for comparable WER or CER. Icelandic characters and diacritics are preserved.
 
-## Human listening remains pending
+## Focused audio-quality review
 
-Record decisions for the **53 near-silence exclusions and seven retained possible-clipping cases** in the [60-recording manual review log](review/focused_manual_review.tsv). The [generated measurements](output/focused_review.tsv) remain available as evidence. Preprocessing writes the generated outputs separately. Keep leading zeros when importing IDs.
+Ranim Alyaseen completed audio-quality listening for all 60 recordings in the focused queue on 21 November 2026. All recordings were available. [Manual review log](review/focused_manual_review.tsv)
+
+| Automatic flag | Usable | Hard to hear | Uncertain |
+|---|---:|---:|---:|
+| Near-silence exclusions | 10 | 43 | 0 |
+| Retained possible-clipping cases | 6 | 0 | 1 |
+| **Total** | **16** | **43** | **1** |
+
+Clip `0049034` needs a second audio-quality opinion. Icelandic transcript agreement was unassessed for all 60 clips and is recorded as `uncertain`. The recommendations leave frozen v1 unchanged.
+
+For follow-up reviews, preserve leading zeros when importing clip IDs. Preprocessing stores the [automatic measurements](output/focused_review.tsv) separately from the manual decisions.
 
 1. **Find and play the FLAC.** Append the row's **audio_path** to the hydrated raw subset or to the root of your full local release. The raw subset includes all seven retained clipping cases and two of the near-silence cases, **0008401** and **0076273**. Use the full release for the other 51 near-silence recordings.
 2. **Record audio quality.** Any teammate can listen for audible speech, gaps, competing voices, clipping, noise, and abrupt cutoffs. Enter your name or initials as reviewer and record **usable**, **issue**, or **uncertain**. Add a timestamp and what you heard where useful. A low RMS score can occur in intelligible speech.
@@ -132,9 +154,9 @@ if (-not $row) { throw "Review ID not found: $id" }
 Invoke-Item -LiteralPath (Join-Path $release $row.audio_path)
 ~~~
 
-The [541-clip evaluation checklist](output/flagged_dev_test_review.tsv) covers 315 test and 226 dev recordings. Its paths start with **audio/** so they resolve from the handoff root. For the original release root, drop that prefix. The [full listening queue](output/listening_queue.tsv) also covers flagged train clips and unflagged controls.
+The broader listening review remains unassessed outside these 60 clips. The 541-clip evaluation checklist covers 315 test and 226 dev recordings. Two were covered by the focused review, leaving 539 unassessed. Its paths start with **audio/** so they resolve from the handoff root. For the original release root, drop that prefix. [Evaluation checklist](output/flagged_dev_test_review.tsv) · [Full listening queue, including flagged train clips and unflagged controls](output/listening_queue.tsv)
 
-The [focused review queue](output/focused_review.tsv) documents **53 near-silence exclusions and seven selected possible-clipping flags**. All 53 met the RMS threshold, and 15 also met the quiet-fraction threshold. The seven selected clips have 0.1095% to 0.3238% full-scale samples. Quiet speech may still be intelligible and full-scale samples may be inaudible. Use the release paths to listen and record proposed changes by ID.
+The [focused review queue](output/focused_review.tsv) documents **53 near-silence exclusions and seven selected possible-clipping flags**. All 53 met the RMS threshold, and 15 also met the quiet-fraction threshold. The seven selected clips have 0.1095% to 0.3238% full-scale samples. Quiet speech may still be intelligible and full-scale samples may be inaudible.
 
 The exclusion log contains **150 unique utterances**, with 127 train, 18 dev, and five test. Of those, 94 were withheld only for the release validation flag, one for both validation and digital silence, two for the metadata empty status, and 53 for near-silence.
 
@@ -165,12 +187,21 @@ To reconstruct the inputs from a local full release, run **subset.py stage --sou
 
 The [upstream README](data/raw/samromur_21.05/README), [metadata.tsv](data/raw/samromur_21.05/metadata.tsv), and [md5s.txt](data/raw/samromur_21.05/md5s.txt) are committed byte for byte. The release MD5 list confirms the README and metadata. All three SHA-256 hashes match the committed audit header.
 
-After cloning and installing dependencies as shown above, run these commands from the repository root.
+After installing the Python 3.14 data dependencies, run these commands from the repository root. Select [test_pipeline.py](tests/test_pipeline.py) explicitly so discovery stays in the data suite.
 
 ~~~powershell
-& $venvPy -X utf8 -m unittest discover -s tests -v
+& $venvPy -X utf8 -m unittest discover -s tests -p 'test_pipeline.py' -v
 & $venvPy -X utf8 verify.py --replay-only --root data/raw/samromur_21.05 --output output
 ~~~
+
+On macOS or Linux with the data environment set up, use:
+
+~~~bash
+.venv/bin/python -X utf8 -m unittest discover -s tests -p 'test_pipeline.py' -v
+.venv/bin/python -X utf8 verify.py --replay-only --root data/raw/samromur_21.05 --output output
+~~~
+
+The 12 data tests use small fixtures. They cover decoding failures, quality exclusions, split integrity, raw-to-cleaned reproduction, and deterministic artifacts. They run without PyTorch, release audio, or a GPU.
 
 Replay uses the committed gzip audit and the three release documents. It compares regenerated manifests, references, vocabulary, and quality reports byte for byte in a temporary folder. It leaves the existing real-audio verification record intact. The decoded audio measurements come from the stored audit.
 
@@ -211,14 +242,11 @@ Run the handoff verifier against the inner folder extracted from the LF ZIP. It 
 
 Earlier Windows verification re-decoded all 100,000 official paths and matched the committed decompressed audit. It checked all selected clips and labels and ran both feature extractors on 30 clips. The earlier handoff check used a fresh extraction and local Whisper assets. The fresh-checkout replay above is a separate check of regeneration from stored audit results.
 
-## Pretrained baselines and HuBERT + CTC (Muhammet Çelik)
+## Pretrained baselines and HuBERT + CTC
 
-All systems below are scored on the same frozen v1 test clips (1,884 utterances, 3.0 h) against the same
-references (`output/evaluation_references.tsv`), with the same text normalization (`prepare.normalize_text`:
-lowercase, Unicode NFC, punctuation and symbols removed). Settings were chosen on the dev split; test was decoded once.
-Per-clip predictions and run records (checkpoint, revision, decoding settings, GPU, package versions) are in
-[`results/pretrained/`](results/pretrained/) and [`results/hubert_ctc/`](results/hubert_ctc/).
-Hardware: Kaggle, one NVIDIA Tesla T4 (16 GB), fp16.
+The four systems below have committed full test predictions on `main` for all 1,884 frozen v1 utterances. They use the shared [evaluation references](output/evaluation_references.tsv) and [text normalization](prepare.py). The dev columns report full development decoding with the chosen settings. See also the [recovered Whisper Small checkpoint evaluations](#recovered-checkpoint-evaluation).
+
+Per-clip predictions and run records are in [results/pretrained/](results/pretrained/) and [results/hubert_ctc/](results/hubert_ctc/). The pretrained inference records and final HuBERT decoding record a Tesla T4. HuBERT training used two T4s.
 
 Every Hugging Face checkpoint is pinned to a full commit hash in the code (`REVISIONS` in
 [`baselines/run_pretrained.py`](baselines/run_pretrained.py), `Config.base_revision` in
@@ -226,27 +254,33 @@ Every Hugging Face checkpoint is pinned to a full commit hash in the code (`REVI
 generation config used as a fallback for `Valdimarb13/whisper-small-icelandic`. A script refuses to run with an
 unpinned checkpoint, and [`tests/test_pretrained.py`](tests/test_pretrained.py) checks the pins.
 
-#### Setup for the modeling code
+### Modeling environment and tests
 
-The modeling code uses its own pinned environment, [`requirements-modeling.txt`](requirements-modeling.txt):
-the exact versions recorded for every reported run (Python 3.13.16, PyTorch 2.11.0 with CUDA 13.0,
-Transformers 5.23.0, Accelerate 1.15.0). Keep it separate from the Windows data-pipeline environment above.
+Person 2's pretrained and HuBERT runs used Python 3.13.16, PyTorch 2.11.0 with CUDA 13.0, Transformers 5.23.0, and Accelerate 1.15.0. Use [requirements-modeling.txt](requirements-modeling.txt) in a separate Python **3.13** environment. The two unit test files work with the CPU build of PyTorch. Person 3's Whisper dependencies are recorded in [training/requirements-person3.txt](training/requirements-person3.txt).
 
-On Kaggle or Colab (GPU T4, internet on), open a notebook from [`notebooks/`](notebooks/) and run it top to bottom.
-Its first cell checks out a fixed data commit of this repository (`DATA_COMMIT`) and a fixed code commit
-(`CODE_COMMIT`), pulls only the needed audio through Git LFS, and installs `requirements-modeling.txt`.
-No manual uploads are needed.
+~~~powershell
+py -3.13 -m venv reproduced/venv-modeling
+$modelPy = './reproduced/venv-modeling/Scripts/python.exe'
+& $modelPy -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cpu
+& $modelPy -m pip install -r requirements-modeling.txt
+& $modelPy -m pip check
+& $modelPy -X utf8 -m unittest discover -s tests -p 'test_pretrained.py' -v
+& $modelPy -X utf8 -m unittest discover -s tests -p 'test_hubert_ctc.py' -v
+~~~
 
-On your own Linux machine with an NVIDIA GPU:
+For Linux CPU tests, create the environment with `python3.13 -m venv reproduced/venv-modeling` and use `reproduced/venv-modeling/bin/python` for the same commands. The six [pretrained tests](tests/test_pretrained.py) and four [HuBERT tests](tests/test_hubert_ctc.py) cover checkpoint pins, ordered predictions, text normalization, and CTC vocabulary, padding, masking, and decoding. Unit tests need no audio or downloaded model weights.
 
-```bash
-python3.13 -m venv .venv-modeling
-.venv-modeling/bin/python -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu130
-.venv-modeling/bin/python -m pip install -r requirements-modeling.txt
-git lfs pull --include="data/cleaned/samromur-21.05-20h-v1/**" --exclude=""
-.venv-modeling/bin/python -m unittest discover -s tests -p "test_pretrained.py"
-.venv-modeling/bin/python baselines/run_pretrained.py --model wav2vec2_is --split dev
-```
+For Person 2's GPU runs, use the [pretrained notebook](notebooks/person2_pretrained_baselines.ipynb) or [HuBERT training notebook](notebooks/hubert_ctc_training.ipynb). They pin the data and code revisions, fetch the required audio through Git LFS, and install the modeling dependencies. For local GPU runs, install the PyTorch 2.11.0 CUDA build from the official wheel index that matches the runtime and hydrate the required split. [PyTorch installation commands](https://pytorch.org/get-started/previous-versions/#v2110)
+
+For example, to rerun the wav2vec 2.0 dev baseline on Linux with CUDA 13.0, use a separate checkout because the runner writes to `results/pretrained/`.
+
+~~~bash
+python3.13 -m venv reproduced/venv-modeling-gpu
+reproduced/venv-modeling-gpu/bin/python -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu130
+reproduced/venv-modeling-gpu/bin/python -m pip install -r requirements-modeling.txt
+git lfs pull --include="data/cleaned/samromur-21.05-20h-v1/dev/**" --exclude=""
+reproduced/venv-modeling-gpu/bin/python baselines/run_pretrained.py --model wav2vec2_is --split dev
+~~~
 
 ### Baselines: published checkpoints, no training by our group
 
@@ -267,8 +301,8 @@ uses the generation config of `openai/whisper-small` (recorded as `generation_co
 **Possible test overlap.** The two Icelandic checkpoints were trained by others on Samrómur data:
 the LVL wav2vec 2.0 model on 967 h of Samrómur Milljón, and `Valdimarb13/whisper-small-icelandic` on
 `language-and-voice-lab/samromur_asr` (its card does not name the training split). Our test clips come from
-Samrómur 21.05, so these models may have heard some of them during training. Their scores are an optimistic
-upper bound and should not be compared one-to-one with models trained only on our 15 h train split.
+Samrómur 21.05. Overlap with the external training sets is possible and has not been established at the clip level.
+Read these published-checkpoint scores with that caveat when comparing them with models trained on our 15 h split.
 
 ### Course baselines that do not support Icelandic (not run)
 
@@ -278,7 +312,7 @@ As the course instructions require, these were not run with a wrong language set
 |---|---|---|
 | `nvidia/canary-1b-v2` | https://huggingface.co/nvidia/canary-1b-v2 | not in the supported languages (25 European languages) |
 | `nvidia/parakeet-tdt-0.6b-v3` | https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3 | not in the supported languages (25 European languages) |
-| `Qwen/Qwen3-ASR-1.7B`, `Qwen/Qwen3-ASR-0.6B` | https://huggingface.co/Qwen/Qwen3-ASR-1.7B | not in the supported languages |
+| `Qwen/Qwen3-ASR-1.7B`, `Qwen/Qwen3-ASR-0.6B` | [1.7B card](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) · [0.6B card](https://huggingface.co/Qwen/Qwen3-ASR-0.6B) | Icelandic is absent from the documented language lists |
 
 ### HuBERT + CTC, fine-tuned for Icelandic by our group
 
@@ -294,6 +328,8 @@ fine-tuned one. This is a course baseline family that we trained ourselves.
 | System | Decoding | Dev WER | Dev CER | Test WER | Test CER |
 |---|---|---:|---:|---:|---:|
 | mHuBERT-147 + CTC (ours, 15 h) | greedy CTC, no LM | 66.30 % | 22.55 % | **68.46 %** | **23.31 %** |
+
+[Full dev run](results/hubert_ctc/model_info/hubert_ctc_dev.json) · [Full test run](results/hubert_ctc/model_info/hubert_ctc_test.json)
 
 How we got here: full fine-tuning from a random CTC head collapsed to all-blank output (dev WER 100 % for 6 epochs, in two runs).
 [`training/diagnose_hubert_ctc.py`](training/diagnose_hubert_ctc.py) showed the same model could not even memorize 32 clips
@@ -314,8 +350,7 @@ The mHuBERT-147 feature encoder uses group normalization and takes no attention 
 shorter clips in a batch changes the features the model sees. In manifest order, clips of very different lengths share a
 batch, as they did during training; sorted by duration, clips get almost no padding. The model was trained with padded
 batches, which is the most likely reason it scores better under the matching condition; we did not test this separately. The 61.31 % was used only to choose the epoch. We report
-the final-decoding numbers (66.30 % dev, 68.46 % test) because the same script produced the test result and every other
-system's predictions in this table. Decoding each clip alone (batch size 1, no padding) would remove the effect; we did not run it.
+the final-decoding numbers (66.30 % dev, 68.46 % test) from the same HuBERT decoding path. A batch-size-one comparison remains untested.
 Dev WER was still falling slowly at epoch 30, so longer training would probably help. CER is far below WER: most errors are
 merged or split words and single-letter spelling mistakes that a language model would fix.
 
@@ -330,8 +365,7 @@ Both are computed on normalized text (lowercase, no punctuation), as the Hugging
 so that systems are not penalized for casing or punctuation conventions (Whisper outputs them, CTC models do not).
 Reference: [Hugging Face audio course, chapter 5, "Evaluation"](https://huggingface.co/learn/audio-course/en/chapter5/evaluation).
 
-Known caveat: references spell numbers as words, while Whisper can output digits; this inflates Whisper's WER.
-The raw outputs are kept in the `hypothesis_raw` column for the error analysis.
+The scoring references contain no digits. A numeric hypothesis can disagree with a reference that spells out the number under the shared normalizer. The prediction files retain raw outputs for error analysis.
 
 ### License of model weights
 
@@ -340,7 +374,11 @@ The project's code is under the repository's MIT license. The fine-tuned HuBERT 
 
 ## Remaining work
 
-Team listening and Icelandic transcript-agreement review remain pending. The [confirmed baseline checklist](BASELINES.md) records the open applicability decisions for named checkpoints. The professor's minimum training duration remains unconfirmed. Each teammate documents and commits their own contribution from their own GitHub account.
+- Icelandic transcript verification and listening beyond the 60 focused clips remain pending. Clip `0049034` is the one uncertain audio-quality decision in the [completed focused review](#focused-audio-quality-review).
+- GMM-HMM, a standalone CTC encoder, attention encoder-decoder and hybrid CTC/attention, and RNN-T still lack committed results on `main` or in the open PRs checked on 21 November 2026. The [baseline checklist](BASELINES.md) records the course requirements and open applicability decisions. The professor's minimum training duration remains unconfirmed.
+- Full standardized dev results for the recovered Whisper checkpoint are still pending. Its completed test run is recorded in [open PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3).
+
+Each teammate documents and commits their own contribution from their own GitHub account.
 
 ## Source and attribution
 
@@ -454,11 +492,12 @@ The notebook additionally generates `original_whisper_digit_examples.csv`.
 
 ---
 
-## Person 3:Tasnim Alibraheem 2309015259 — Whisper Small Fine-Tuning
+## Whisper Small fine-tuning
 
-### Overview
-Fine-tuned OpenAI's multilingual Whisper Small model (~242M parameters)
-for Icelandic automatic speech recognition using the Samrómur 21.05 dataset.
+Person 3 fine-tuned OpenAI's multilingual Whisper Small model (~242M parameters)
+on the frozen Samrómur v1 train split. The [training notebook](NLP_Project3_Person3_Whisper_Clean.ipynb)
+contains saved training output. The [historical training summary](training_metrics.json)
+records the configuration and original validation scores from that output.
 
 ### Training Configuration
 
@@ -475,7 +514,7 @@ for Icelandic automatic speech recognition using the Samrómur 21.05 dataset.
 | Training duration | 5 hours 12 minutes |
 | Optimizer steps | 1,968 |
 
-### Validation Results
+### Historical validation during training
 
 | Checkpoint | WER | CER |
 |---|---|---|
@@ -483,42 +522,20 @@ for Icelandic automatic speech recognition using the Samrómur 21.05 dataset.
 | Step 1600 | **30.62%** | 8.41% |
 | Step 1968 | 30.70% | **8.40%** |
 
-The lowest WER (30.62%) occurred at step 1600, while the lowest
-CER (8.40%) occurred at step 1968. These are different checkpoints.
+Steps 1600 and 1968 had the lowest historical dev WER and CER respectively. Only step 1000 was recovered and exported. The table uses the original notebook's scoring, and the historical JSON's evaluation status describes the time of that training snapshot.
 
-The best checkpoint was not preserved. The recovered and exported
-model corresponds to step 1000.
+### Recovered checkpoint evaluation
 
-Its original validation results were:
-- WER: 34.51%
-- CER: 9.70%
+Both runs below use the recovered step-1000 checkpoint, frozen v1 references and the shared `prepare.normalize_text` scoring policy.
 
-These results have not yet been recalculated using the team's shared
-`prepare.normalize_text` scoring policy.
+| Status | Evaluation | Clips | WER | CER | Evidence |
+|---|---|---:|---:|---:|---|
+| On `main` | Dev smoke test (CPU) | 5 | 40.54% | 12.36% | [Run record](results/person3_whisper_smoke/dev_run.json) · [Predictions](results/person3_whisper_smoke/dev_predictions.csv) |
+| In [open PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3) | Full held-out test (T4, beam 1) | 1,884 | 36.06% | 10.16% | [Run record](https://github.com/RanimAlyaseen/icelandic-asr-project3/blob/fd654551b27d9ae8d3ca82788ef045051b987358/results/person4_evaluation/person3_whisper/test_run.json) · [Evaluation artifacts](https://github.com/RanimAlyaseen/icelandic-asr-project3/tree/fd654551b27d9ae8d3ca82788ef045051b987358/results/person4_evaluation) |
 
-### Deliverables
+PR #3 includes per-utterance predictions, confidence intervals, and paired comparisons. A full standardized dev run is still pending on `main` and in the PR artifacts checked on 21 November 2026. [Open PR #4](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/4) proposes automatic checkpoint download and hash verification and reports reproducing the five-clip dev smoke test.
 
-- Cleaned Whisper Small fine-tuning notebook
-- Training metrics and configuration
-- Recovered checkpoint 1000 (stored on Google Drive)
-
-### Remaining Evaluation
-
-Before final test evaluation, checkpoint 1000 must be re-evaluated
-on the development set using the shared text normalization policy.
-
-After decoding settings are frozen, a teammate can evaluate the
-recovered model on the held-out test set.
-
-The final evaluation should include:
-- Test WER and CER
-- Per-utterance predictions and references
-- Inference time and GPU information
-- Confidence intervals and statistical comparisons
-
-No final test results are reported yet.
-
-### Recovered Model — Download and Verification
+### Recovered model download and verification
 
 **Model:** Fine-tuned OpenAI Whisper Small  
 **Available checkpoint:** Step 1000  
@@ -547,6 +564,4 @@ processor, tokenizer, and recovery metadata.
 These checksums were calculated from the exported files stored
 in Google Drive.
 
-The exported checkpoint was previously loaded successfully.
-Full inference and standardized development-set evaluation remain pending.
-
+Use the downloaded checkpoint with the [recovered Whisper evaluation script](training/evaluate_whisper_step1000.py) and [Whisper dependencies](training/requirements-person3.txt). The run records above document the evaluated checkpoint and decoding settings.

@@ -1,0 +1,22 @@
+{
+  "seed": 2105,
+  "sample_rate": 16000,
+  "frame_ms": 25.0,
+  "hop_ms": 10.0,
+  "n_fft": 512,
+  "n_mfcc": 13,
+  "delta_window": 2,
+  "n_mixtures": 2,
+  "covariance_type": "diag",
+  "max_frames_per_character": 20000,
+  "max_global_frames": 30000,
+  "gmm_max_iter": 60,
+  "gmm_reg_covar": 0.001,
+  "transition_smoothing": 0.1,
+  "lm_scale_candidates": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "selected_lm_scale": 1.5
+}

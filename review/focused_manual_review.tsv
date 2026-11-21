@@ -1,61 +1,61 @@
 split	id	audio_path	automatic_reason	reviewer	audio_quality_decision	transcript_agreement_status	notes	recommended_action
-test	0025341	test/002154/002154-0025341.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-test	0025347	test/002154/002154-0025347.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-train	0037445	train/004725/004725-0037445.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-train	0038190	train/004734/004734-0038190.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-train	0039209	train/004911/004911-0039209.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-train	0048081	train/006087/006087-0048081.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-train	0049034	train/006218/006218-0049034.flac	possible_clipping (full_scale_fraction >= 0.001)		pending	pending		pending
-test	0022381	test/002973/002973-0022381.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-test	0026517	test/003465/003465-0026517.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0025708	dev/003383/003383-0025708.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0029786	dev/003851/003851-0029786.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0029787	dev/003851/003851-0029787.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0033919	dev/004453/004453-0033919.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-dev	0175599	dev/009434/009434-0175599.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-dev	0230384	dev/010022/010022-0230384.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0230385	dev/010022/010022-0230385.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-dev	0230420	dev/010023/010023-0230420.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0008401	train/001192/001192-0008401.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0040551	train/005102/005102-0040551.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0053843	train/006482/006482-0053843.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0053844	train/006482/006482-0053844.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0053845	train/006482/006482-0053845.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0053846	train/006482/006482-0053846.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0053847	train/006482/006482-0053847.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059486	train/006487/006487-0059486.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059487	train/006487/006487-0059487.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059488	train/006487/006487-0059488.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059489	train/006487/006487-0059489.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059490	train/006487/006487-0059490.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059491	train/006487/006487-0059491.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059492	train/006487/006487-0059492.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059493	train/006852/006852-0059493.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059495	train/006852/006852-0059495.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059497	train/006852/006852-0059497.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059498	train/006852/006852-0059498.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059499	train/006852/006852-0059499.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059500	train/006852/006852-0059500.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059501	train/006852/006852-0059501.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059502	train/006852/006852-0059502.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059503	train/006852/006852-0059503.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059504	train/006852/006852-0059504.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059505	train/006852/006852-0059505.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059507	train/006852/006852-0059507.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059508	train/006852/006852-0059508.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059509	train/006852/006852-0059509.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059510	train/006852/006852-0059510.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059511	train/006852/006852-0059511.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059512	train/006852/006852-0059512.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059513	train/006852/006852-0059513.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059516	train/006852/006852-0059516.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059517	train/006852/006852-0059517.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0059519	train/006852/006852-0059519.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059520	train/006852/006852-0059520.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0059521	train/006852/006852-0059521.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0076273	train/007661/007661-0076273.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0076274	train/007661/007661-0076274.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)		pending	pending		pending
-train	0076275	train/007661/007661-0076275.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0078375	train/007797/007797-0078375.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0083159	train/008005/008005-0083159.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
-train	0230360	train/010021/010021-0230360.flac	near_silence (rms_dbfs <= -55)		pending	pending		pending
+test	0025341	test/002154/002154-0025341.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+test	0025347	test/002154/002154-0025347.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+train	0037445	train/004725/004725-0037445.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+train	0038190	train/004734/004734-0038190.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+train	0039209	train/004911/004911-0039209.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+train	0048081	train/006087/006087-0048081.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Retain in frozen v1.
+train	0049034	train/006218/006218-0049034.flac	possible_clipping (full_scale_fraction >= 0.001)	Ranim Alyaseen	uncertain	uncertain	Unsure about audio quality. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep the current frozen v1 status. Seek a second audio-quality review.
+test	0022381	test/002973/002973-0022381.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was too low. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+test	0026517	test/003465/003465-0026517.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+dev	0025708	dev/003383/003383-0025708.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+dev	0029786	dev/003851/003851-0029786.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+dev	0029787	dev/003851/003851-0029787.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+dev	0033919	dev/004453/004453-0033919.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was too low. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+dev	0175599	dev/009434/009434-0175599.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+dev	0230384	dev/010022/010022-0230384.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+dev	0230385	dev/010022/010022-0230385.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+dev	0230420	dev/010023/010023-0230420.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0008401	train/001192/001192-0008401.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0040551	train/005102/005102-0040551.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0053843	train/006482/006482-0053843.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0053844	train/006482/006482-0053844.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Some sound was audible but difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0053845	train/006482/006482-0053845.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0053846	train/006482/006482-0053846.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0053847	train/006482/006482-0053847.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0059486	train/006487/006487-0059486.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059487	train/006487/006487-0059487.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059488	train/006487/006487-0059488.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059489	train/006487/006487-0059489.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0059490	train/006487/006487-0059490.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059491	train/006487/006487-0059491.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0059492	train/006487/006487-0059492.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059493	train/006852/006852-0059493.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059495	train/006852/006852-0059495.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059497	train/006852/006852-0059497.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059498	train/006852/006852-0059498.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059499	train/006852/006852-0059499.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059500	train/006852/006852-0059500.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059501	train/006852/006852-0059501.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059502	train/006852/006852-0059502.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059503	train/006852/006852-0059503.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059504	train/006852/006852-0059504.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059505	train/006852/006852-0059505.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059507	train/006852/006852-0059507.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059508	train/006852/006852-0059508.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059509	train/006852/006852-0059509.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059510	train/006852/006852-0059510.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059511	train/006852/006852-0059511.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059512	train/006852/006852-0059512.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	usable	uncertain	Audio sounds usable. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1. Consider for a future version after transcript review.
+train	0059513	train/006852/006852-0059513.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059516	train/006852/006852-0059516.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059517	train/006852/006852-0059517.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059519	train/006852/006852-0059519.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059520	train/006852/006852-0059520.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0059521	train/006852/006852-0059521.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0076273	train/007661/007661-0076273.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0076274	train/007661/007661-0076274.flac	near_silence (rms_dbfs <= -55 | quiet_fraction >= 0.98)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0076275	train/007661/007661-0076275.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0078375	train/007797/007797-0078375.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0083159	train/008005/008005-0083159.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.
+train	0230360	train/010021/010021-0230360.flac	near_silence (rms_dbfs <= -55)	Ranim Alyaseen	issue	uncertain	Sound was difficult to hear clearly. Transcript agreement was not assessed because the reviewer does not understand Icelandic.	Keep excluded in frozen v1.

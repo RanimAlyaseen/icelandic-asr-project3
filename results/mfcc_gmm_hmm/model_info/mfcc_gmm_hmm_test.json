@@ -1,0 +1,47 @@
+{
+  "model_key": "mfcc_gmm_hmm",
+  "split": "test",
+  "test_evaluation": "single evaluation after dev freeze",
+  "selected_lm_scale": 1.5,
+  "config": {
+    "seed": 2105,
+    "sample_rate": 16000,
+    "frame_ms": 25.0,
+    "hop_ms": 10.0,
+    "n_fft": 512,
+    "n_mfcc": 13,
+    "delta_window": 2,
+    "n_mixtures": 2,
+    "covariance_type": "diag",
+    "max_frames_per_character": 20000,
+    "max_global_frames": 30000,
+    "gmm_max_iter": 60,
+    "gmm_reg_covar": 0.001,
+    "transition_smoothing": 0.1,
+    "lm_scale_candidates": [
+      0.5,
+      1.0,
+      1.5
+    ]
+  },
+  "model_sha256": "36cab079ec7e2074287aeb75013454a8faedc91ec4075dcf85125ca523c458c0",
+  "text_normalization": "prepare.normalize_text",
+  "utterances": 1884,
+  "skipped_missing_audio": [],
+  "audio_hours": 2.999711875,
+  "wall_seconds_incl_audio_loading": 135.8515427999955,
+  "rtf_incl_audio_loading": 0.012580054764981526,
+  "wer": 1.0147272612350673,
+  "cer": 0.8773745392685002,
+  "word_errors": 16054,
+  "reference_words": 15821,
+  "char_errors": 86646,
+  "reference_characters": 98756,
+  "environment": {
+    "python": "3.13.11",
+    "numpy": "2.2.6",
+    "scikit_learn": "1.7.2",
+    "soundfile": "0.13.1",
+    "device": "CPU"
+  }
+}
