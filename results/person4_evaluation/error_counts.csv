@@ -4,3 +4,5 @@ wav2vec2_is_test.csv,1022,94,111,65
 whisper_small_is_test_beam5.csv,2747,249,445,133
 whisper_small_test_beam5.csv,10068,650,3018,18
 whisper_finetuned_step1000_test.csv,4524,429,752,138
+mfcc_gmm_hmm_test.csv,8723,7079,252,0
+rnnt_test.csv,8101,1476,1332,28

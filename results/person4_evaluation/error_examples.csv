@@ -19,3 +19,10 @@ whisper_finetuned_step1000_test.csv,0011280,substitution,og,á,sögur hans og ri
 whisper_finetuned_step1000_test.csv,0011280,deletion,nær,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar bjöllunær því í gleymsku á eldri árum hans
 whisper_finetuned_step1000_test.csv,0016230,insertion,,of,hvað veldur ofvirkni,hvað veldur of virkni
 whisper_finetuned_step1000_test.csv,0016230,word boundary,ofvirkni,of virkni,hvað veldur ofvirkni,hvað veldur of virkni
+mfcc_gmm_hmm_test.csv,0064716,substitution,þess vegna er,czþexchá þýxzét ex,þess vegna er ég að spyrja,czþexchá þýxzét ex
+mfcc_gmm_hmm_test.csv,0064716,deletion,ég að spyrja,,þess vegna er ég að spyrja,czþexchá þýxzét ex
+mfcc_gmm_hmm_test.csv,0216215,insertion,,þé,sunnudaganna,þé zaxzcþ
+rnnt_test.csv,0064716,insertion,,ef,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0064716,substitution,ég,eiga,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0064716,deletion,að,,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0024833,word boundary,í skólanum,ískólanum,eiffel var afburðanámsmaður þegar á unglingsárum en þótti slá slöku við í skólanum,bæði var algreiðanna og spaður þegar úlfin sjálfri en þóttist lásklökuð við ískólanum

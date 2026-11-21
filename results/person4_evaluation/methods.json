@@ -7,7 +7,9 @@
     "wav2vec2_is_test.csv",
     "whisper_small_is_test_beam5.csv",
     "whisper_small_test_beam5.csv",
-    "whisper_finetuned_step1000_test.csv"
+    "whisper_finetuned_step1000_test.csv",
+    "mfcc_gmm_hmm_test.csv",
+    "rnnt_test.csv"
   ],
   "speaker_session_groups": 1026,
   "normalization": "prepare.normalize_text from the source commit",
@@ -20,7 +22,7 @@
     "method": "Two-sided paired randomization with model labels swapped by speaker/session group",
     "seed": 2106,
     "random_swaps": 10000,
-    "p_value_correction": "Plus-one Monte Carlo correction, then Holm across 20 comparisons",
+    "p_value_correction": "Plus-one Monte Carlo correction, then Holm across 42 comparisons",
     "difference_direction": "Model A minus model B, in percentage points"
   },
   "caveat": "The published Icelandic wav2vec 2.0 and Whisper Small checkpoints may have seen some Samrómur test clips during external training."
