@@ -388,7 +388,7 @@ The test-set inference used a Tesla T4 GPU and took 892.32 seconds for 1,884 tes
 
 The per-clip predictions and run metadata are available in `results/person4_evaluation/person3_whisper/`.
 
-The statistical comparison is saved in `results/person4_evaluation/whisper_finetuning_comparison.csv`.
+The statistical comparison is saved in `results/whisper_finetuning_comparison.csv`.
 
 The original Whisper baseline used beam search with five beams, while the fine-tuned checkpoint used greedy decoding with one beam. Therefore, this comparison reflects both fine-tuning and decoding-configuration differences.
 
