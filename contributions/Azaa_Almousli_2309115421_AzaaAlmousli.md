@@ -25,3 +25,7 @@ After saving that configuration, I evaluated the held-out test split once: **1,8
 ### Reproducibility and handoff
 
 The code, pinned dependencies, configuration, usage instructions, model card, and model access are in [`mfcc_gmm_hmm/`](../mfcc_gmm_hmm/). The fitted model is tracked with Git LFS at `models/mfcc_gmm_hmm/model.joblib`. The complete dev and test hypotheses are in `results/mfcc_gmm_hmm/predictions/`; the corresponding score, environment, model hash, and timing records are in `results/mfcc_gmm_hmm/model_info/`. These CSV predictions are ready for Saleh's scoring and statistical comparison against the other systems.
+
+### Follow-up diagnostic
+
+After review feedback, I added a training-only memorization diagnostic and a separate transcript-constrained Viterbi realignment/re-estimation experiment in [`mfcc_gmm_hmm/diagnose_realign.py`](../mfcc_gmm_hmm/diagnose_realign.py). On 16 train utterances, the initial model did not memorize its own examples (WER 107.32%, CER 80.30%). Re-estimating the GMMs after one constrained realignment pass gave train WER 108.94% and CER 78.08%; on an untouched 8-utterance dev sample, WER worsened from 108.06% to 116.13% and CER from 91.03% to 98.21%. The follow-up reads no test data, keeps the initial full-split model and benchmark outputs unchanged, and records its predictions and metrics separately under `results/mfcc_gmm_hmm/diagnostics/`. The small result does not justify retraining the full model with this one-pass method.

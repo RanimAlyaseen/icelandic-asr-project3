@@ -1,4 +1,5 @@
 # Pinned environment for the modeling code: baselines/, training/, notebooks/ and their tests.
+# torchaudio is used only for the RNN-T loss (training/train_rnnt.py).
 # These are the exact versions recorded in results/*/pip_freeze.txt for every reported run:
 # Kaggle, Python 3.13.16, CUDA 13.0, NVIDIA Tesla T4.
 #
@@ -7,6 +8,7 @@
 # pip keeps it because 2.11.0+cu130 satisfies torch==2.11.0. Elsewhere, install the CUDA build
 # from https://pytorch.org first, then this file.
 torch==2.11.0
+torchaudio==2.11.0
 transformers==5.23.0
 accelerate==1.15.0
 huggingface_hub==1.33.0
