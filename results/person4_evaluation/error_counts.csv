@@ -6,3 +6,6 @@ whisper_small_test_beam5.csv,10068,650,3018,18
 whisper_finetuned_step1000_test.csv,4524,429,752,138
 mfcc_gmm_hmm_test.csv,8723,7079,252,0
 rnnt_test.csv,8101,1476,1332,28
+ctc_scratch_test.csv,9459,1292,1035,69
+attention_scratch_test.csv,14992,72,9272,0
+hybrid_ctc_attention_test.csv,6795,905,1091,103

@@ -26,3 +26,14 @@ rnnt_test.csv,0064716,insertion,,ef,þess vegna er ég að spyrja,ef þess vegna
 rnnt_test.csv,0064716,substitution,ég,eiga,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
 rnnt_test.csv,0064716,deletion,að,,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
 rnnt_test.csv,0024833,word boundary,í skólanum,ískólanum,eiffel var afburðanámsmaður þegar á unglingsárum en þótti slá slöku við í skólanum,bæði var algreiðanna og spaður þegar úlfin sjálfri en þóttist lásklökuð við ískólanum
+ctc_scratch_test.csv,0011280,substitution,hans og ritsmíðar,annso riksmíðar gellu,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur annso riksmíðar gellu nær þvíleimsku á eldri árlmans
+ctc_scratch_test.csv,0011280,deletion,féllu,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur annso riksmíðar gellu nær þvíleimsku á eldri árlmans
+ctc_scratch_test.csv,0016230,insertion,,og,hvað veldur ofvirkni,það veldur og veirni
+ctc_scratch_test.csv,0027385,word boundary,heimili manna,heimilimanna,þessi hegðun hefur síðan fylgt köttunum inn á heimili manna,þessi hegðun hefur sjan fyt köttunum in á heimilimanna
+attention_scratch_test.csv,0064716,insertion,,það var,þess vegna er ég að spyrja,það var ekki að hann sagði sagði hann
+attention_scratch_test.csv,0064716,substitution,þess vegna er ég að spyrja,ekki að hann sagði sagði hann,þess vegna er ég að spyrja,það var ekki að hann sagði sagði hann
+attention_scratch_test.csv,0072061,deletion,við skúla,,það er eins gott að konungurinn er hvergi nálægur sagði theodóra við skúla,það er ekki að hafði ekki að hann að hann sagði sagði hann
+hybrid_ctc_attention_test.csv,0011280,substitution,hans og ritsmíðar féllu,hann so reytsmíðar gellurnær,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hann so reytsmíðar gellurnær því gleymsku á eldri árum hans
+hybrid_ctc_attention_test.csv,0011280,deletion,nær,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hann so reytsmíðar gellurnær því gleymsku á eldri árum hans
+hybrid_ctc_attention_test.csv,0011031,insertion,,nokkuri,því er vitaskuld ógerlegt að svara með nokkurri vissu,því er vitarskuld ómgerlegt að svara með nokkuri við söm
+hybrid_ctc_attention_test.csv,0028156,word boundary,viðmót,við mót,stýrikerfi er eins og hver annar hugbúnaður og hefur viðmót,stýrikerfið er ins og hverannar hópunaður og hefur við mót
