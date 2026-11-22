@@ -79,10 +79,11 @@ Use a separate [Python 3.13 modeling environment](#modeling-environment-and-test
 | [contributions/](contributions/) | Individual work records authored and committed by team members |
 | [baselines/](baselines/) | Inference code for published pretrained checkpoints (baselines, no training by the group) |
 | [training/](training/) | HuBERT training and diagnostics, RNN-T, CTC, attention and hybrid CTC/attention training from scratch, recovered Whisper evaluation, and Person 3's Whisper dependencies |
+| [evaluation/](evaluation/) | Saleh's ten-model evaluation script and pinned dependencies for reproducing statistics and plots from committed predictions |
 | [mfcc_gmm_hmm/](mfcc_gmm_hmm/) | MFCC features, GMM-HMM training and inference, configuration, dependencies, and model card |
 | [models/mfcc_gmm_hmm/](models/mfcc_gmm_hmm/) | Reproducible trained GMM-HMM weights tracked with Git LFS |
 | [models/mfcc_gmm_hmm_aligned/](models/mfcc_gmm_hmm_aligned/) | Separately trained transcript-constrained alignment experiment weights, tracked with Git LFS |
-| [notebooks/](notebooks/) | Person 2's pretrained-baseline, HuBERT, RNN-T and CTC/attention/hybrid Kaggle/Colab notebooks |
+| [notebooks/](notebooks/) | Person 2's pretrained-baseline, HuBERT, RNN-T and CTC/attention/hybrid Kaggle/Colab notebooks, and [Saleh's evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) |
 | [results/](results/) | Per-clip predictions, run records, and training logs |
 
 ### MFCC + GMM-HMM baseline
@@ -468,7 +469,6 @@ trained from scratch on Samrómur 21.05 and are released under CC BY 4.0.
 
 - Icelandic transcript verification and listening beyond the 60 focused clips remain pending. Clip `0049034` is the one uncertain audio-quality decision in the [completed focused review](#focused-audio-quality-review).
 - Every course baseline family that supports Icelandic now has committed results: GMM-HMM, CTC encoder, attention encoder-decoder, hybrid CTC/attention, RNN-T, wav2vec 2.0 + CTC, HuBERT + CTC and multilingual Whisper (checked 22 November 2026). The [baseline checklist](BASELINES.md) records the course requirements and open applicability decisions. The professor's minimum training duration remains unconfirmed.
-- Saleh completed full standardized dev and test evaluations of the recovered Whisper checkpoint in [PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3), which is still open and has not been merged into `main`.
 
 Each teammate documents and commits their own contribution from their own GitHub account.
 
@@ -538,7 +538,7 @@ Test-set inference took 892.32 seconds on a Tesla T4 GPU.
 
 The original Whisper baseline used five-beam decoding, while the recovered fine-tuned checkpoint used greedy decoding. Consequently, the observed comparison reflects both model fine-tuning and different decoding configurations.
 
-The full development and test prediction CSVs and run metadata are committed under `results/person4_evaluation/person3_whisper/`. These evaluations are complete; no additional test decoding is needed.
+The completed full development and test evaluations have committed [dev predictions](results/person4_evaluation/person3_whisper/dev_predictions.csv), [dev run metadata](results/person4_evaluation/person3_whisper/dev_run.json), [test predictions](results/person4_evaluation/person3_whisper/test_predictions.csv), and [test run metadata](results/person4_evaluation/person3_whisper/test_run.json). No additional test decoding is needed.
 
 The evaluation script automatically generates `results/person4_evaluation/whisper_finetuning_comparison.csv` when the fine-tuned Whisper predictions are supplied.
 
