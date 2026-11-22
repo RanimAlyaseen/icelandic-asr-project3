@@ -1,0 +1,39 @@
+model_file,clip_id,category,reference_span,prediction_span,reference,prediction
+hubert_ctc_test.csv,0064716,substitution,er,erég,þess vegna er ég að spyrja,þess vegna erég að spyrja
+hubert_ctc_test.csv,0064716,deletion,ég,,þess vegna er ég að spyrja,þess vegna erég að spyrja
+hubert_ctc_test.csv,0064716,word boundary,er ég,erég,þess vegna er ég að spyrja,þess vegna erég að spyrja
+hubert_ctc_test.csv,0016230,insertion,,velur,hvað veldur ofvirkni,hvað velur g virkni
+wav2vec2_is_test.csv,0020846,substitution,summu,sömu,enn hefur randi ekki þurft að greiða neinum þá summu,enn hefur randi ekki þurft að greiða neinum þá sömu
+wav2vec2_is_test.csv,0030689,insertion,,anton í,antoníníanusarnir eru koparpeningar með örlitlu silfri blönduðu í,anton í janusanir eru kopar peningar með örlitlu silfri blönduðu í
+wav2vec2_is_test.csv,0030689,word boundary,koparpeningar,kopar peningar,antoníníanusarnir eru koparpeningar með örlitlu silfri blönduðu í,anton í janusanir eru kopar peningar með örlitlu silfri blönduðu í
+wav2vec2_is_test.csv,0007688,deletion,mynd,,það er b mynd sameindarinnar sem flestum er nú kunnugleg,það er bmynd sameindarinnar sem flestum er nú kunnareg
+whisper_small_is_test_beam5.csv,0011280,substitution,og,á,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar féllu nær því í gleymsku á eldri árum hans
+whisper_small_is_test_beam5.csv,0016230,insertion,,of,hvað veldur ofvirkni,hvað veldur of virkmi
+whisper_small_is_test_beam5.csv,0000347,deletion,í,,krefjist seðlabankinn hárra vaxta í þessum viðskiptum,krefjast seðlabankinn hárra vaxtæ þessum viðskiptum
+whisper_small_is_test_beam5.csv,0220186,word boundary,nýja búningnum,nýjabúningnum,myndir af nýja búningnum má sjá hér að neðan,myndir af nýjabúningnum má sjá hér að neðan
+whisper_small_test_beam5.csv,0064716,substitution,vegna er ég,hlökna ariða gasperja,þess vegna er ég að spyrja,þess hlökna ariða gasperja
+whisper_small_test_beam5.csv,0064716,deletion,að spyrja,,þess vegna er ég að spyrja,þess hlökna ariða gasperja
+whisper_small_test_beam5.csv,0011031,insertion,,við það,því er vitaskuld ógerlegt að svara með nokkurri vissu,því er við það skuldt okkel eftir svara með nokkur í vissu
+whisper_small_test_beam5.csv,0030689,word boundary,koparpeningar,kopar peningar,antoníníanusarnir eru koparpeningar með örlitlu silfri blönduðu í,aðton í annu sann ér eru kopar peningar með öllitlu silveri blöntuðu í
+whisper_finetuned_step1000_test.csv,0011280,substitution,og,á,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar bjöllunær því í gleymsku á eldri árum hans
+whisper_finetuned_step1000_test.csv,0011280,deletion,nær,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hans á ritsmíðar bjöllunær því í gleymsku á eldri árum hans
+whisper_finetuned_step1000_test.csv,0016230,insertion,,of,hvað veldur ofvirkni,hvað veldur of virkni
+whisper_finetuned_step1000_test.csv,0016230,word boundary,ofvirkni,of virkni,hvað veldur ofvirkni,hvað veldur of virkni
+mfcc_gmm_hmm_test.csv,0064716,substitution,þess vegna er,czþexchá þýxzét ex,þess vegna er ég að spyrja,czþexchá þýxzét ex
+mfcc_gmm_hmm_test.csv,0064716,deletion,ég að spyrja,,þess vegna er ég að spyrja,czþexchá þýxzét ex
+mfcc_gmm_hmm_test.csv,0216215,insertion,,þé,sunnudaganna,þé zaxzcþ
+rnnt_test.csv,0064716,insertion,,ef,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0064716,substitution,ég,eiga,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0064716,deletion,að,,þess vegna er ég að spyrja,ef þess vegna er eiga spyrja
+rnnt_test.csv,0024833,word boundary,í skólanum,ískólanum,eiffel var afburðanámsmaður þegar á unglingsárum en þótti slá slöku við í skólanum,bæði var algreiðanna og spaður þegar úlfin sjálfri en þóttist lásklökuð við ískólanum
+ctc_scratch_test.csv,0011280,substitution,hans og ritsmíðar,annso riksmíðar gellu,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur annso riksmíðar gellu nær þvíleimsku á eldri árlmans
+ctc_scratch_test.csv,0011280,deletion,féllu,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur annso riksmíðar gellu nær þvíleimsku á eldri árlmans
+ctc_scratch_test.csv,0016230,insertion,,og,hvað veldur ofvirkni,það veldur og veirni
+ctc_scratch_test.csv,0027385,word boundary,heimili manna,heimilimanna,þessi hegðun hefur síðan fylgt köttunum inn á heimili manna,þessi hegðun hefur sjan fyt köttunum in á heimilimanna
+attention_scratch_test.csv,0064716,insertion,,það var,þess vegna er ég að spyrja,það var ekki að hann sagði sagði hann
+attention_scratch_test.csv,0064716,substitution,þess vegna er ég að spyrja,ekki að hann sagði sagði hann,þess vegna er ég að spyrja,það var ekki að hann sagði sagði hann
+attention_scratch_test.csv,0072061,deletion,við skúla,,það er eins gott að konungurinn er hvergi nálægur sagði theodóra við skúla,það er ekki að hafði ekki að hann að hann sagði sagði hann
+hybrid_ctc_attention_test.csv,0011280,substitution,hans og ritsmíðar féllu,hann so reytsmíðar gellurnær,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hann so reytsmíðar gellurnær því gleymsku á eldri árum hans
+hybrid_ctc_attention_test.csv,0011280,deletion,nær,,sögur hans og ritsmíðar féllu nær því í gleymsku á eldri árum hans,sögur hann so reytsmíðar gellurnær því gleymsku á eldri árum hans
+hybrid_ctc_attention_test.csv,0011031,insertion,,nokkuri,því er vitaskuld ógerlegt að svara með nokkurri vissu,því er vitarskuld ómgerlegt að svara með nokkuri við söm
+hybrid_ctc_attention_test.csv,0028156,word boundary,viðmót,við mót,stýrikerfi er eins og hver annar hugbúnaður og hefur viðmót,stýrikerfið er ins og hverannar hópunaður og hefur við mót
