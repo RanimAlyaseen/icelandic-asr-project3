@@ -6,6 +6,7 @@ Dependencies: numpy pandas jiwer==4.0.0 matplotlib; git required.
 No GPU or training required. The four original baseline inputs are fetched from a pinned Git commit; added-model CSVs are supplied explicitly.
 """
 import argparse
+import hashlib
 import os
 
 parser = argparse.ArgumentParser(description="Evaluate Icelandic ASR predictions")
@@ -140,26 +141,35 @@ assert issues["reference mismatches"] == issues["session mismatches"] == 1
 
 rows_by_model = {name: read_rows(path) for name, path in model_paths.items()}
 if args.person3_csv:
-    p3_path = Path(args.person3_csv)
-    p3_rows = read_rows(p3_path)
-    if len(p3_rows) != 1884 or any(not all(k in row for k in ("id", "split", "reference", "prediction")) for row in p3_rows):
-        raise ValueError("Person 3 file must contain 1,884 rows and id/split/reference/prediction")
-    # Canonicalize schema and compare with frozen official references.
-    p3_converted = []
-    for row in p3_rows:
-        clip_id = row["id"]
-        if clip_id not in official:
-            raise ValueError(f"Unknown Person 3 clip ID: {clip_id}")
-        p3_converted.append({
-            "id": clip_id, "split": row["split"],
-            "speaker_session_id": session_by_clip[clip_id],
-            "reference": row["reference"],
-            "reference_raw": official[clip_id]["text_raw"],
-            "hypothesis_raw": row["prediction"],
-            "hypothesis": normalize_text(row["prediction"]),
-        })
-    rows_by_model["whisper_finetuned_step1000_test.csv"] = p3_converted
-    model_files.append("whisper_finetuned_step1000_test.csv")
+        p3_path = Path(args.person3_csv)
+        expected_sha256 = "506f0b277372ebdbba9e08c990e1b691773de6539a2a803b83544d57ac20bf3b"
+        actual_sha256 = hashlib.sha256(p3_path.read_bytes()).hexdigest()
+
+        if actual_sha256 != expected_sha256:
+            raise ValueError(
+                f"Recovered Whisper prediction CSV SHA-256 mismatch: "
+                f"expected {expected_sha256}, got {actual_sha256}. "
+                "Do not evaluate a modified prediction file."
+            )
+        p3_rows = read_rows(p3_path)
+        if len(p3_rows) != 1884 or any(not all(k in row for k in ("id", "split", "reference", "prediction")) for row in p3_rows):
+            raise ValueError("Person 3 file must contain 1,884 rows and id/split/reference/prediction")
+        # Canonicalize schema and compare with frozen official references.
+        p3_converted = []
+        for row in p3_rows:
+            clip_id = row["id"]
+            if clip_id not in official:
+                raise ValueError(f"Unknown Person 3 clip ID: {clip_id}")
+            p3_converted.append({
+                "id": clip_id, "split": row["split"],
+                "speaker_session_id": session_by_clip[clip_id],
+                "reference": row["reference"],
+                "reference_raw": official[clip_id]["text_raw"],
+                "hypothesis_raw": row["prediction"],
+                "hypothesis": normalize_text(row["prediction"]),
+            })
+        rows_by_model["whisper_finetuned_step1000_test.csv"] = p3_converted
+        model_files.append("whisper_finetuned_step1000_test.csv")
 if args.gmm_csv:
     gmm_path = Path(args.gmm_csv)
     gmm_rows = read_rows(gmm_path)
