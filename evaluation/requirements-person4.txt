@@ -2,3 +2,4 @@ numpy==2.4.6
 pandas==2.2.3
 jiwer==4.0.0
 matplotlib==3.10.0
+soundfile==0.14.0

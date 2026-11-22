@@ -467,8 +467,8 @@ trained from scratch on Samrómur 21.05 and are released under CC BY 4.0.
 
 ## Remaining work
 
-- Icelandic transcript verification and listening beyond the 60 focused clips remain pending. Clip `0049034` is the one uncertain audio-quality decision in the [completed focused review](#focused-audio-quality-review).
-- Every course baseline family that supports Icelandic now has committed results: GMM-HMM, CTC encoder, attention encoder-decoder, hybrid CTC/attention, RNN-T, wav2vec 2.0 + CTC, HuBERT + CTC and multilingual Whisper (checked 22 November 2026). The [baseline checklist](BASELINES.md) records the course requirements and open applicability decisions. The professor's minimum training duration remains unconfirmed.
+- Icelandic transcript agreement has not been checked by a reviewer who understands Icelandic. Listening beyond the 60 focused clips remains pending, and clip `0049034` needs a second audio-quality opinion. The [focused review](#focused-audio-quality-review) covers audio quality only.
+- Every course baseline family that supports Icelandic now has committed results: GMM-HMM, CTC encoder, attention encoder-decoder, hybrid CTC/attention, RNN-T, wav2vec 2.0 + CTC, HuBERT + CTC and multilingual Whisper (checked 22 November 2026). The [baseline checklist](BASELINES.md) records the course requirements and open applicability decisions. No minimum training duration has been confirmed; the frozen train split contains 15.00002 hours, but no claim is made that this satisfies an unspecified minimum.
 
 Each teammate documents and commits their own contribution from their own GitHub account.
 
@@ -481,7 +481,7 @@ Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed un
 
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
-I evaluated ten ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified clip IDs, reference transcripts, and speaker/session assignments and independently recalculated word error rate (WER) and character error rate (CER) using the shared `prepare.normalize_text` function.
+I evaluated ten ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I checked clip IDs, frozen reference text, and speaker/session assignments for consistency across the evaluation inputs and independently recalculated word error rate (WER) and character error rate (CER) using the shared `prepare.normalize_text` function. This was a data-consistency check, not a listening check of Icelandic transcript agreement.
 
 ### Test Results
 
@@ -579,7 +579,7 @@ The official frozen normalization and scoring rules were not changed for this ad
 
 ### Reproducing the Evaluation
 
-The standalone script `evaluation/person4_evaluate.py` reproduces the ten-model analysis from saved predictions without retraining or GPU inference.
+The standalone script `evaluation/person4_evaluate.py` reproduces the ten-model analysis from saved predictions without retraining or GPU inference. Use a separate Python 3.13 environment for the pinned evaluation dependencies; the pinned pandas 2.2.3 does not install from a wheel on Python 3.14. On Windows, `py -3.13 -m venv reproduced/venv-evaluation` creates that environment; use its `Scripts/python.exe` as `python` in the commands below.
 
 Install dependencies from the repository root:
 
@@ -590,7 +590,7 @@ pip install -r evaluation/requirements-person4.txt
 Run the complete evaluation:
 
 ```bash
-python evaluation/person4_evaluate.py \
+python -X utf8 evaluation/person4_evaluate.py \
   --person3-csv results/person4_evaluation/person3_whisper/test_predictions.csv \
   --gmm-csv results/mfcc_gmm_hmm/predictions/mfcc_gmm_hmm_test.csv \
   --rnnt-csv results/rnnt/predictions/rnnt_test.csv \
@@ -660,7 +660,7 @@ Both development and test evaluations below use the recovered step-1000 checkpoi
 | Full development set (T4, beam 1) | 1,314 | 34.51% | 9.69% | [Run record](results/person4_evaluation/person3_whisper/dev_run.json) · [Predictions](results/person4_evaluation/person3_whisper/dev_predictions.csv) |
 | Full held-out test (T4, beam 1) | 1,884 | 36.06% | 10.16% | [Run record](results/person4_evaluation/person3_whisper/test_run.json) · [Predictions](results/person4_evaluation/person3_whisper/test_predictions.csv) |
 
-The complete standardized development and test evaluations were performed using Person 3's recovered Whisper Small checkpoint 1000. Both prediction CSVs and their run metadata are included in [PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3), together with confidence intervals and paired statistical comparisons.
+The complete standardized development and test evaluations were performed using Person 3's recovered Whisper Small checkpoint 1000. Both prediction CSVs and their run metadata are committed on `main` at the links above. The [confidence intervals and model scores](results/person4_evaluation/model_scores_and_confidence_intervals.csv) and [paired statistical comparisons](results/person4_evaluation/paired_comparisons.csv) are also committed on `main`.
 
 The original training-time validation results are preserved separately above because they were produced during checkpoint selection. The standardized development evaluation uses the team's shared scoring policy.
 
