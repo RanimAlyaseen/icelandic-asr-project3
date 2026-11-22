@@ -23,3 +23,7 @@ Completed audio-quality listening for all 60 recordings in the [focused manual r
 Coordinated task ownership and progress across the team, reviewed pull requests for completeness and reproducibility, and checked reported scores against committed predictions and frozen references. Maintained the shared README, coordinated corrections and merge follow-ups, and preserved each teammate's attribution and commit history. Baseline applicability was checked against official model cards.
 
 Model training and benchmark result generation are documented in teammates' individual contributions.
+
+## Classical alignment follow-up
+
+Implemented a separate two-pass transcript-constrained GMM-HMM alignment experiment using Azaa's frozen model as the starting point, without changing her baseline or its test results. The training script re-estimates the acoustic mixtures from train-only Viterbi alignments, and a second script compares both models on identical dev clips and decoder weights. Added targeted alignment tests, saved the aligned model, all dev candidates, paired dev predictions, and a reproducible exploratory uncertainty calculation. Documented the weak WER and the limits of interpreting a dev-tuned comparison in [the experiment README](../mfcc_gmm_hmm/README.md).

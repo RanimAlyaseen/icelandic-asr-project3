@@ -72,7 +72,7 @@ Use a separate [Python 3.13 modeling environment](#modeling-environment-and-test
 | [requirements-modeling.txt](requirements-modeling.txt) | Person 2's pinned environment for pretrained baselines, HuBERT, and their tests. Person 3's Whisper dependencies are in [training/requirements-person3.txt](training/requirements-person3.txt). |
 | [NLP_Project3_Person3_Whisper_Clean.ipynb](NLP_Project3_Person3_Whisper_Clean.ipynb) | Person 3's Whisper Small fine-tuning notebook and saved training outputs |
 | [training_metrics.json](training_metrics.json) | Historical Whisper training and validation summary transcribed from the notebook output. Its evaluation status describes that snapshot. |
-| [tests/](tests/) | Separate data-pipeline and pretrained/HuBERT/RNN-T/CTC-attention unit tests |
+| [tests/](tests/) | Separate data-pipeline, pretrained/HuBERT/RNN-T/CTC-attention, and classical-alignment unit tests |
 | [output/](output/) | Frozen manifests and references, vocabulary, audit, review queues, and verification records |
 | [data/](data/) | Raw subset and original documents under **raw/samromur_21.05/** and cleaned v1 FLACs under **cleaned/samromur-21.05-20h-v1/** |
 | [review/](review/) | Manual listening decisions kept outside the generated outputs |
@@ -81,6 +81,7 @@ Use a separate [Python 3.13 modeling environment](#modeling-environment-and-test
 | [training/](training/) | HuBERT training and diagnostics, RNN-T, CTC, attention and hybrid CTC/attention training from scratch, recovered Whisper evaluation, and Person 3's Whisper dependencies |
 | [mfcc_gmm_hmm/](mfcc_gmm_hmm/) | MFCC features, GMM-HMM training and inference, configuration, dependencies, and model card |
 | [models/mfcc_gmm_hmm/](models/mfcc_gmm_hmm/) | Reproducible trained GMM-HMM weights tracked with Git LFS |
+| [models/mfcc_gmm_hmm_aligned/](models/mfcc_gmm_hmm_aligned/) | Separately trained transcript-constrained alignment experiment weights, tracked with Git LFS |
 | [notebooks/](notebooks/) | Person 2's pretrained-baseline, HuBERT, RNN-T and CTC/attention/hybrid Kaggle/Colab notebooks |
 | [results/](results/) | Per-clip predictions, run records, and training logs |
 
@@ -89,6 +90,8 @@ Use a separate [Python 3.13 modeling environment](#modeling-environment-and-test
 The classical Icelandic character recognizer uses 13 MFCCs with delta and delta-delta features, diagonal Gaussian mixtures, a left-to-right character HMM, and a train-only character bigram language model. Its initialization uses uniform transcript-to-frame alignment; it does not use a curated phonetic lexicon. The completed CPU run trained on 10,488 utterances, selected its language-model weight on 1,314 dev utterances, then evaluated test once on 1,884 utterances. Test WER was **101.47%** and CER **87.74%**, so the current recipe is a weak reference point. See [`mfcc_gmm_hmm/README.md`](mfcc_gmm_hmm/README.md) for setup, model access, full metrics, and predictions in [`results/mfcc_gmm_hmm/`](results/mfcc_gmm_hmm/).
 
 A follow-up diagnostic checked memorization on 16 train utterances and tried one transcript-constrained realignment/re-estimation pass, without reading test data or replacing the initial model. The model did not memorize the train sample (WER 107.32%, CER 80.30%), and the realignment pass worsened the 8-utterance dev sample (WER 108.06% to 116.13%, CER 91.03% to 98.21%). See the [diagnostic script](mfcc_gmm_hmm/diagnose_realign.py) and [separate diagnostic outputs](results/mfcc_gmm_hmm/diagnostics/).
+
+A separate two-pass, transcript-constrained alignment experiment trained on the same 10,488 train clips and selected settings on the same 1,314 dev clips. At the original decoder weight grid (0.5, 1.0, 1.5), its best dev WER was **106.59%**, worse than the original baseline's **101.46%**. A wider *matched* dev decoder grid selected **99.94% WER / 93.28% CER** for the original model and **99.47% WER / 84.42% CER** for the aligned model. The WER difference is just 0.48 percentage points, both models remain very weak, and the exploratory paired dev interval is optimistic because settings were selected on dev. The aligned model has **not** been run on test; the frozen baseline test score above is unchanged. Full code, the candidate grid, model hashes, dev predictions, and caveats are in [`mfcc_gmm_hmm/README.md`](mfcc_gmm_hmm/README.md) and [`results/mfcc_gmm_hmm_aligned/`](results/mfcc_gmm_hmm_aligned/).
 
 
 
@@ -465,7 +468,7 @@ trained from scratch on Samrómur 21.05 and are released under CC BY 4.0.
 
 - Icelandic transcript verification and listening beyond the 60 focused clips remain pending. Clip `0049034` is the one uncertain audio-quality decision in the [completed focused review](#focused-audio-quality-review).
 - Every course baseline family that supports Icelandic now has committed results: GMM-HMM, CTC encoder, attention encoder-decoder, hybrid CTC/attention, RNN-T, wav2vec 2.0 + CTC, HuBERT + CTC and multilingual Whisper (checked 22 November 2026). The [baseline checklist](BASELINES.md) records the course requirements and open applicability decisions. The professor's minimum training duration remains unconfirmed.
-- Full standardized dev results for the recovered Whisper checkpoint are still pending. Its completed test run is recorded in [open PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3).
+- Saleh completed full standardized dev and test evaluations of the recovered Whisper checkpoint in [PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3), which is still open and has not been merged into `main`.
 
 Each teammate documents and commits their own contribution from their own GitHub account.
 
@@ -693,3 +696,138 @@ These checksums were calculated from the exported files stored
 in Google Drive.
 
 Use the downloaded checkpoint with the [recovered Whisper evaluation script](training/evaluate_whisper_step1000.py) and [Whisper dependencies](training/requirements-person3.txt). The run records above document the evaluated checkpoint and decoding settings.
+
+### Reproduce Person 3's Whisper Small Training
+
+Person 3's standalone training entry point is
+[`training/train_whisper.py`](training/train_whisper.py).
+It fine-tunes multilingual Whisper Small using the frozen
+Samrómur v1 training and validation manifests.
+
+**Reproducibility limitation:** The exact base-model revision
+and dataset checkout used for the original training were not
+recorded. The revisions below are fixed for future runs;
+they are not verified historical revisions.
+
+| Component | Fixed revision or selection |
+|---|---|
+| Base model | `openai/whisper-small` |
+| Base-model revision | `973afd24965f72e36ca33b3055d56a652f456b4d` |
+| Dataset selection | `samromur-21.05-20h-v1` |
+| Preparation commit | `55f5a6856e92cdf89608c492cc470aea0d019e1b` |
+| Audio-enabled commit | `96e5839b27d9871d6b2408b3c3719dc809a730b7` |
+
+The preparation commit predates the Git LFS audio pointers.
+The audio-enabled commit contains those pointers, while its
+three prepared manifests are byte-identical to the frozen
+preparation revision.
+
+**1. Prepare a separate dataset checkout**
+
+Run these commands in a terminal, outside the development
+repository. Git LFS must be installed.
+
+~~~bash
+git lfs install
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/RanimAlyaseen/icelandic-asr-project3.git icelandic-asr-dataset
+cd icelandic-asr-dataset
+GIT_LFS_SKIP_SMUDGE=1 git checkout --detach 96e5839b27d9871d6b2408b3c3719dc809a730b7
+git lfs pull --include="data/cleaned/samromur-21.05-20h-v1/**" --exclude=""
+cd ..
+~~~
+
+The Git LFS command retrieves the prepared cleaned audio,
+not the complete raw subset.
+
+**2. Install dependencies**
+
+Run this command from the development repository:
+
+~~~bash
+python -m pip install -r training/requirements-person3.txt
+~~~
+
+GPU training requires a compatible CUDA-enabled PyTorch
+installation and sufficient GPU memory.
+
+**3. Validate the dataset without training**
+
+~~~bash
+python training/train_whisper.py --repo-dir ../icelandic-asr-dataset --check-only
+~~~
+
+The preflight checks the frozen manifest SHA-256 hashes
+and verifies that manifest-referenced audio files exist
+and contain FLAC data rather than unresolved LFS pointers.
+
+| Manifest | Expected SHA-256 |
+|---|---|
+| `output/train.jsonl` | `d36a1adccdb10682b30a6fd8b2f7e20f8c86babb4b1d20a007af79179c4436ed` |
+| `output/dev.jsonl` | `f0e7675cd31497788250728bba966d1d884ad5f929b3488724b2fef2110f9bf4` |
+| `output/test.jsonl` | `f5e346f545a5d7f4298f1838bc63b978a4d7ab9d063ddc97897fa065223d0481` |
+
+**4. Run training when GPU resources are available**
+
+~~~bash
+python training/train_whisper.py --repo-dir ../icelandic-asr-dataset --output-dir ./whisper_training_output
+~~~
+
+The configuration uses three epochs, learning rate `1e-5`,
+FP16, gradient checkpointing, and validation WER for
+checkpoint selection.
+
+**Validation status:** The standalone script passed Python
+syntax and CLI checks. Its missing-audio failure path was
+also tested. A complete training run using this script
+has not been performed or independently verified.
+
+For evaluation without retraining, use the recovered
+step-1000 checkpoint procedure below.
+
+---
+
+### Reproduce Person 3's Five-Sample Evaluation
+
+The recovered Whisper Small checkpoint can be downloaded and
+evaluated without retraining or accessing a personal Google Drive.
+
+The original training did not record the exact base-model revision
+or dataset checkout commit.
+
+**1. Install dependencies**
+
+```bash
+python -m pip install -r training/requirements-person3.txt gdown
+```
+
+**2. Download and verify the checkpoint**
+
+```bash
+python training/download_whisper_checkpoint.py
+```
+
+The downloader verifies SHA-256 checksums for seven checkpoint files.
+The model is saved to `models/recovered_model_step1000/`.
+
+**3. Download development audio**
+
+```bash
+git lfs install
+git lfs pull --include="data/cleaned/samromur-21.05-20h-v1/dev/**" --exclude=""
+```
+
+**4. Run the five-sample evaluation**
+
+```bash
+python training/evaluate_whisper_step1000.py \
+  --model models/recovered_model_step1000 \
+  --audio-root data/cleaned/samromur-21.05-20h-v1 \
+  --split dev \
+  --max-samples 5 \
+  --output-dir results/person3_whisper_repro_test
+```
+
+The verified five-sample CPU results were **40.54% WER** and
+**12.36% CER**. These are smoke-test results, not full-split metrics.
+
+No retraining is required.

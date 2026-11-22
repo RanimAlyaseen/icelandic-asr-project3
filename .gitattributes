@@ -12,3 +12,4 @@ data/raw/samromur_21.05/md5s.txt -text -whitespace
 data/raw/samromur_21.05/*/*/*.flac filter=lfs diff=lfs merge=lfs -text
 data/cleaned/samromur-21.05-20h-v1/*/*/*.flac filter=lfs diff=lfs merge=lfs -text
 models/mfcc_gmm_hmm/*.joblib filter=lfs diff=lfs merge=lfs -text
+models/mfcc_gmm_hmm_aligned/*.joblib filter=lfs diff=lfs merge=lfs -text
