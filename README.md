@@ -478,7 +478,7 @@ Samrómur Icelandic Speech 21.05 by David Erik Mollberg et al. is distributed un
 
 ## (Saleh Almasaadi) — Evaluation and Statistical Analysis
 
-I evaluated seven ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified the clip IDs and reference transcripts and recalculated WER and CER using the shared `prepare.normalize_text` function.
+I evaluated ten ASR models on the same 1,884 frozen test clips from 1,026 speaker/session groups. I verified clip IDs, reference transcripts, and speaker/session assignments and independently recalculated word error rate (WER) and character error rate (CER) using the shared `prepare.normalize_text` function.
 
 ### Test Results
 
@@ -487,97 +487,131 @@ I evaluated seven ASR models on the same 1,884 frozen test clips from 1,026 spea
 | Icelandic wav2vec 2.0* | 7.76% | 1.86% |
 | Published Icelandic Whisper Small* | 21.75% | 5.60% |
 | Fine-tuned Whisper Small (checkpoint 1000) | 36.06% | 10.16% |
+| Hybrid CTC/attention (trained from scratch) | 55.57% | 17.77% |
 | HuBERT + CTC | 68.46% | 23.31% |
 | RNN-T (trained from scratch) | 68.95% | 30.54% |
+| CTC encoder (trained from scratch) | 74.50% | 22.88% |
 | Original Whisper Small | 86.82% | 36.35% |
 | MFCC + GMM-HMM | 101.47% | 87.74% |
+| Attention-only (trained from scratch) | 153.82% | 92.79% |
 
-\* These published Icelandic checkpoints may have encountered some Samrómur test clips during external training. Their results should therefore be interpreted with caution.
+\* The published Icelandic checkpoints may have encountered some Samrómur test clips during external training. Their scores should therefore be interpreted cautiously.
 
-WER can exceed 100% when the total number of substitution, deletion, and insertion errors exceeds the number of reference words.
+WER can exceed 100% when substitutions, deletions, and insertions collectively outnumber the reference words.
+
+The hybrid CTC/attention model achieved the lowest WER among the models trained entirely from scratch by our group. Its 55.57% WER was also lower than the HuBERT + CTC baseline's 68.46% WER. The attention-only model struggled to learn an alignment and performed poorly, illustrating the benefit of combining CTC and attention.
 
 ### Statistical Analysis
 
-I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups. I also performed 42 paired WER/CER comparisons using 10,000 session-level randomization tests, with Holm correction for multiple comparisons.
+I calculated 95% confidence intervals using 10,000 bootstrap resamples of whole speaker/session groups (random seed 2105).
 
-The [results folder](results/person4_evaluation/) contains the error rates, confidence intervals, paired statistical comparisons, transcription error analysis, methods, and comparison chart.
+I performed 90 paired WER/CER comparisons using 10,000 speaker/session-level randomization tests (random seed 2106), with plus-one Monte Carlo p-values and Holm correction across all 90 comparisons.
 
-The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the seven-model analysis on a CPU.
+For example:
+
+- Hybrid CTC/attention achieved a WER 12.89 percentage points lower than HuBERT + CTC (95% CI for HuBERT minus hybrid: 11.63–14.15 percentage points; Holm-adjusted p approximately 0.00900).
+- HuBERT + CTC and RNN-T differed by only 0.49 percentage points in WER. Their paired WER difference was not statistically significant (95% CI: -1.94 to +0.93 percentage points; Holm-adjusted p = 0.55114).
+- HuBERT + CTC had a CER 7.24 percentage points lower than RNN-T, with Holm-adjusted p approximately 0.00900.
+- HuBERT + CTC and the scratch-trained CTC encoder showed no statistically significant CER difference after Holm correction (adjusted p = 0.55114).
+
+The [evaluation results](results/person4_evaluation/) contain all model scores, confidence intervals, paired comparisons, error counts, representative transcription errors, methods, and the comparison chart.
+
+The [evaluation notebook](notebooks/Person4_Icelandic_ASR_Evaluation.ipynb) reproduces the ten-model analysis on a CPU.
 
 ### Fine-Tuned Whisper Small Evaluation
 
 I evaluated Person 3's recovered Whisper Small checkpoint 1000 on the development and frozen test sets using a Tesla T4 GPU.
 
-- Development set (1,314 clips): 34.51% WER, 9.69% CER.
-- Test set (1,884 clips): 36.06% WER, 10.16% CER.
+- Development set (1,314 clips): 34.51% WER and 9.69% CER.
+- Test set (1,884 clips): 36.06% WER and 10.16% CER.
 
-The original Whisper Small baseline achieved 86.82% WER and 36.35% CER on the test set.
+The original Whisper Small baseline achieved 86.82% WER and 36.35% CER.
 
-The observed WER reduction was 50.76 percentage points (95% CI: 47.31–54.85), while CER decreased by 26.19 percentage points (95% CI: 23.48–29.17).
+The observed WER reduction was 50.76 percentage points (95% CI: 47.31–54.85). CER decreased by 26.19 percentage points (95% CI: 23.48–29.17).
 
-The paired randomization p-values were approximately 0.00010 before correction. With Holm correction across all 42 comparisons, both adjusted p-values were approximately 0.00420.
+The paired randomization p-values were approximately 0.00010 before correction. In the final ten-model analysis, the Holm-adjusted p-values for these comparisons were approximately 0.00900.
 
-The test inference took 892.32 seconds on a Tesla T4 GPU.
+Test-set inference took 892.32 seconds on a Tesla T4 GPU.
 
-The original Whisper baseline used five-beam decoding, whereas the fine-tuned checkpoint used greedy decoding. This comparison therefore reflects both model fine-tuning and decoding-configuration differences.
+The original Whisper baseline used five-beam decoding, while the recovered fine-tuned checkpoint used greedy decoding. Consequently, the observed comparison reflects both model fine-tuning and different decoding configurations.
 
-The development and test predictions and run metadata are available in `results/person4_evaluation/person3_whisper/`.
+The full development and test prediction CSVs and run metadata are committed under `results/person4_evaluation/person3_whisper/`. These evaluations are complete; no additional test decoding is needed.
 
-The automatically generated statistical comparison is saved in `results/person4_evaluation/whisper_finetuning_comparison.csv`.
+The evaluation script automatically generates `results/person4_evaluation/whisper_finetuning_comparison.csv` when the fine-tuned Whisper predictions are supplied.
+
+### Reproducibility and Input Verification
+
+The frozen reference data, normalization implementation, and four original baseline prediction files are retrieved from Git commit:
+
+`e9cd03331ef7f2295a5baf197c8c74f1ce41417d`
+
+The evaluation notebook verifies the recovered Whisper test prediction input against this fixed SHA-256 checksum:
+
+`506f0b277372ebdbba9e08c990e1b691773de6539a2a803b83544d57ac20bf3b`
+
+The notebook rejects a modified or mismatched Whisper prediction file, rather than silently accepting predictions from a moving branch.
+
+Evaluation dependencies are pinned in `evaluation/requirements-person4.txt`.
 
 ### Additional Model Comparisons
 
-I evaluated Person 5's MFCC + GMM-HMM predictions on the frozen test set and independently calculated 101.47% WER and 87.74% CER.
+I evaluated Person 5's MFCC + GMM-HMM predictions and independently obtained 101.47% WER and 87.74% CER. Subsequent training-only diagnostics found that this model struggled to memorize a small set of training recordings. One transcript-constrained realignment attempt worsened the development sample, so the original model and test results were retained without test-based tuning.
 
-I also evaluated Person 2's RNN-T predictions and reproduced the reported 68.95% WER and 30.54% CER.
+I also independently evaluated Person 2's additional predictions:
 
-The RNN-T and HuBERT + CTC models achieved similar WER values, with a difference of approximately 0.49 percentage points. The paired WER comparison was not statistically significant (Holm-adjusted p = 0.50725). However, HuBERT + CTC had a lower CER, with a statistically significant paired difference (Holm-adjusted p approximately 0.00420).
+- RNN-T: 68.95% WER, 30.54% CER.
+- Scratch CTC encoder: 74.50% WER, 22.88% CER.
+- Scratch attention-only model: 153.82% WER, 92.79% CER.
+- Hybrid CTC/attention: 55.57% WER, 17.77% CER.
+
+All ten models were checked against the same frozen 1,884 test clips and 1,026 speaker/session groups before comparison.
 
 ### Transcription Error Analysis
 
-I analyzed substitution, deletion, insertion, and exact word-boundary errors for all seven models.
+I analyzed substitutions, deletions, insertions, and exact word-boundary errors across all ten models. The final evaluation generated ten model-level error summaries and 38 representative transcription error examples.
 
-I also examined digit-versus-word recognition errors in the original Whisper Small predictions. There were 39 test predictions containing digits. Representative examples are included in the evaluation notebook and saved to `original_whisper_digit_examples.csv`.
+I also examined digit-versus-word errors in the original Whisper Small predictions. There were 39 test predictions containing digits. The notebook preserves representative examples and generates `original_whisper_digit_examples.csv`.
 
-The official frozen scoring and normalization policy was not changed for this analysis.
+The official frozen normalization and scoring rules were not changed for this additional analysis.
 
 ### Reproducing the Evaluation
 
-The standalone evaluation script is located at `evaluation/person4_evaluate.py`. It reproduces the seven-model evaluation using saved test predictions, without retraining models or requiring a GPU.
+The standalone script `evaluation/person4_evaluate.py` reproduces the ten-model analysis from saved predictions without retraining or GPU inference.
 
-Install the pinned dependencies:
+Install dependencies from the repository root:
 
 ```bash
 pip install -r evaluation/requirements-person4.txt
 ```
 
-Run from the repository root after obtaining the relevant prediction CSV files:
+Run the complete evaluation:
 
 ```bash
 python evaluation/person4_evaluate.py \
   --person3-csv results/person4_evaluation/person3_whisper/test_predictions.csv \
   --gmm-csv results/mfcc_gmm_hmm/predictions/mfcc_gmm_hmm_test.csv \
   --rnnt-csv results/rnnt/predictions/rnnt_test.csv \
+  --ctc-csv results/ctc_scratch/predictions/ctc_scratch_test.csv \
+  --attention-csv results/attention_scratch/predictions/attention_scratch_test.csv \
+  --hybrid-csv results/hybrid_ctc_attention/predictions/hybrid_ctc_attention_test.csv \
   --output-dir results/person4_evaluation_reproduced
 ```
 
-The GMM-HMM predictions are included in the team's repository. The RNN-T predictions are provided in Person 2's PR #7 and must be available at the indicated path before this command is run.
+The RNN-T, scratch CTC, attention-only, hybrid CTC/attention, GMM-HMM, and recovered Whisper prediction files are included in the shared repository.
 
-The script verifies the 1,884 test clips and 1,026 speaker/session groups, recalculates WER and CER, computes 95% confidence intervals, performs 42 paired statistical comparisons with Holm correction, and generates the error analysis and comparison chart.
-
-The statistical analysis uses 10,000 bootstrap samples with random seed 2105 and 10,000 paired randomization samples with seed 2106.
+The script validates all 1,884 test clips and 1,026 speaker/session groups, recalculates WER/CER, computes 95% confidence intervals, performs 90 paired statistical comparisons with Holm correction, and generates the transcription error analysis and comparison chart.
 
 The script exports:
 
-- `model_scores_and_confidence_intervals.csv`
-- `paired_comparisons.csv`
-- `error_counts.csv`
-- `error_examples.csv`
-- `whisper_finetuning_comparison.csv`
+- `model_scores_and_confidence_intervals.csv` (20 rows)
+- `paired_comparisons.csv` (90 rows)
+- `error_counts.csv` (10 rows)
+- `error_examples.csv` (38 rows)
+- `whisper_finetuning_comparison.csv` (2 rows)
 - `methods.json`
 - `test_error_rates.png`
 
-The notebook additionally generates `original_whisper_digit_examples.csv`.
+The notebook additionally produces the original Whisper digit-error examples.
 
 ---
 
@@ -615,14 +649,19 @@ Steps 1600 and 1968 had the lowest historical dev WER and CER respectively. Only
 
 ### Recovered checkpoint evaluation
 
-Both runs below use the recovered step-1000 checkpoint, frozen v1 references and the shared `prepare.normalize_text` scoring policy.
+Both development and test evaluations below use the recovered step-1000 checkpoint, frozen v1 references, and the shared `prepare.normalize_text` scoring policy.
 
-| Status | Evaluation | Clips | WER | CER | Evidence |
-|---|---|---:|---:|---:|---|
-| On `main` | Dev smoke test (CPU) | 5 | 40.54% | 12.36% | [Run record](results/person3_whisper_smoke/dev_run.json) · [Predictions](results/person3_whisper_smoke/dev_predictions.csv) |
-| In [open PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3) | Full held-out test (T4, beam 1) | 1,884 | 36.06% | 10.16% | [Run record](https://github.com/RanimAlyaseen/icelandic-asr-project3/blob/fd654551b27d9ae8d3ca82788ef045051b987358/results/person4_evaluation/person3_whisper/test_run.json) · [Evaluation artifacts](https://github.com/RanimAlyaseen/icelandic-asr-project3/tree/fd654551b27d9ae8d3ca82788ef045051b987358/results/person4_evaluation) |
+| Evaluation | Clips | WER | CER | Evidence |
+|---|---:|---:|---:|---|
+| Dev smoke test (CPU) | 5 | 40.54% | 12.36% | [Run record](results/person3_whisper_smoke/dev_run.json) · [Predictions](results/person3_whisper_smoke/dev_predictions.csv) |
+| Full development set (T4, beam 1) | 1,314 | 34.51% | 9.69% | [Run record](results/person4_evaluation/person3_whisper/dev_run.json) · [Predictions](results/person4_evaluation/person3_whisper/dev_predictions.csv) |
+| Full held-out test (T4, beam 1) | 1,884 | 36.06% | 10.16% | [Run record](results/person4_evaluation/person3_whisper/test_run.json) · [Predictions](results/person4_evaluation/person3_whisper/test_predictions.csv) |
 
-PR #3 includes per-utterance predictions, confidence intervals, and paired comparisons. A full standardized dev run is still pending on `main` and in the PR artifacts checked on 21 November 2026. [Open PR #4](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/4) proposes automatic checkpoint download and hash verification and reports reproducing the five-clip dev smoke test.
+The complete standardized development and test evaluations were performed using Person 3's recovered Whisper Small checkpoint 1000. Both prediction CSVs and their run metadata are included in [PR #3](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/3), together with confidence intervals and paired statistical comparisons.
+
+The original training-time validation results are preserved separately above because they were produced during checkpoint selection. The standardized development evaluation uses the team's shared scoring policy.
+
+[PR #4](https://github.com/RanimAlyaseen/icelandic-asr-project3/pull/4) documents the separate checkpoint download and verification workflow.
 
 ### Recovered model download and verification
 
