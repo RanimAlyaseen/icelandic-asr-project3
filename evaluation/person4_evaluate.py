@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Person 4: reproducible ASR evaluation from saved predictions.
 
-Run: python evaluation/person4_evaluate.py [--person3-csv PATH] [--gmm-csv PATH] [--rnnt-csv PATH] [--output-dir PATH]
+Run: python evaluation/person4_evaluate.py --person3-csv PATH --gmm-csv PATH --rnnt-csv PATH --ctc-csv PATH --attention-csv PATH --hybrid-csv PATH [--output-dir PATH]
 Dependencies: numpy pandas jiwer==4.0.0 matplotlib; git required.
-No GPU or training required. Input files are fetched from a pinned Git commit.
+No GPU or training required. The four original baseline inputs are fetched from a pinned Git commit; added-model CSVs are supplied explicitly.
 """
 import argparse
 import os
@@ -12,6 +12,9 @@ parser = argparse.ArgumentParser(description="Evaluate Icelandic ASR predictions
 parser.add_argument("--person3-csv", type=str, default=None, help="Person 3 test_predictions.csv")
 parser.add_argument("--gmm-csv", type=str, default=None, help="Person 5 MFCC+GMM-HMM test predictions CSV")
 parser.add_argument("--rnnt-csv", type=str, default=None, help="Person 2 RNN-T test predictions CSV")
+parser.add_argument("--ctc-csv", type=str, default=None, help="Person 2 scratch CTC encoder test predictions CSV")
+parser.add_argument("--attention-csv", type=str, default=None, help="Person 2 scratch attention-only test predictions CSV")
+parser.add_argument("--hybrid-csv", type=str, default=None, help="Person 2 hybrid CTC/attention test predictions CSV")
 parser.add_argument("--output-dir", default="person4_evaluation", help="Output directory")
 args = parser.parse_args()
 
@@ -167,16 +170,27 @@ if args.gmm_csv:
         raise ValueError(f"GMM-HMM file is missing required columns: {required}")
     rows_by_model["mfcc_gmm_hmm_test.csv"] = gmm_rows
     model_files.append("mfcc_gmm_hmm_test.csv")
-if args.rnnt_csv:
-    rnnt_path = Path(args.rnnt_csv)
-    rnnt_rows = read_rows(rnnt_path)
-    if len(rnnt_rows) != 1884:
-        raise ValueError(f"RNN-T file should have 1,884 rows; found {len(rnnt_rows)}")
-    required = {"id", "split", "speaker_session_id", "reference", "reference_raw", "hypothesis_raw"}
-    if any(not required.issubset(row) for row in rnnt_rows):
-        raise ValueError(f"RNN-T file is missing required columns: {required}")
-    rows_by_model["rnnt_test.csv"] = rnnt_rows
-    model_files.append("rnnt_test.csv")
+# Additional test prediction CSVs follow the team-standard baseline schema.
+# Preserve their original, potentially empty, hypothesis_raw strings.
+additional_model_csvs = (
+    ("rnnt_test.csv", args.rnnt_csv),
+    ("ctc_scratch_test.csv", args.ctc_csv),
+    ("attention_scratch_test.csv", args.attention_csv),
+    ("hybrid_ctc_attention_test.csv", args.hybrid_csv),
+)
+required_model_columns = {
+    "id", "split", "speaker_session_id", "reference", "reference_raw", "hypothesis_raw"
+}
+for model_filename, csv_path in additional_model_csvs:
+    if csv_path is None:
+        continue
+    new_rows = read_rows(Path(csv_path))
+    if len(new_rows) != 1884:
+        raise ValueError(f"{model_filename}: expected 1,884 rows, found {len(new_rows)}")
+    if any(not required_model_columns.issubset(row) for row in new_rows):
+        raise ValueError(f"{model_filename}: missing one or more required columns: {required_model_columns}")
+    rows_by_model[model_filename] = new_rows
+    model_files.append(model_filename)
 
 for name, rows in rows_by_model.items():
     issues = validate_predictions(rows, official, session_by_clip)
@@ -197,6 +211,10 @@ reported = {
     "whisper_small_test_beam5.csv": (86.82, 36.35),
     "whisper_finetuned_step1000_test.csv": (36.06, 10.16),
     "rnnt_test.csv": (68.95, 30.54),
+    "ctc_scratch_test.csv": (74.50, 22.88),
+    "hybrid_ctc_attention_test.csv": (55.57, 17.77),
+    # Person 2 reported attention-only WER rounded to one decimal (153.8%).
+    # Recalculate its exact WER/CER rather than enforcing two-decimal equality.
 }
 
 for filename, rows in rows_by_model.items():
@@ -206,7 +224,9 @@ for filename, rows in rows_by_model.items():
 
     wer = round(100 * jiwer.wer(refs, preds), 2)
     cer = round(100 * jiwer.cer(refs, preds), 2)
-    if expected is not None and (wer, cer) != expected:
+    if expected is not None and (
+        wer != expected[0] or (expected[1] is not None and cer != expected[1])
+    ):
         raise ValueError(f"{filename}: recalculated {(wer, cer)} vs reported {expected}")
     status = "MATCH" if expected is not None else "SCORE"
 
@@ -266,7 +286,8 @@ for model_index, filename in enumerate(model_files):
         low, high = np.percentile(bootstrap_rates, [2.5, 97.5])
 
         if filename in reported:
-            assert round(point, 2) == reported[filename][offset]
+            if reported[filename][offset] is not None:
+                assert round(point, 2) == reported[filename][offset]
         ci_rows.append({
             "model_file": filename,
             "metric": metric,
@@ -518,6 +539,9 @@ labels = {
     "whisper_finetuned_step1000_test.csv": "Fine-tuned Whisper Small",
     "mfcc_gmm_hmm_test.csv": "MFCC + GMM-HMM",
     "rnnt_test.csv": "RNN-T (scratch)",
+    "ctc_scratch_test.csv": "CTC encoder (scratch)",
+    "attention_scratch_test.csv": "Attention-only (scratch)",
+    "hybrid_ctc_attention_test.csv": "Hybrid CTC/attention (scratch)",
 }
 
 scores = pd.DataFrame(ci_rows)
@@ -527,7 +551,7 @@ model_order = (
     .tolist()
 )
 
-fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(12.5, max(5.5, 0.53 * len(model_order))), sharey=True)
 positions = list(range(len(model_order)))
 
 for ax, metric in zip(axes, ("WER", "CER")):
